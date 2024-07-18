@@ -7,4 +7,5 @@ const userSchema = z.object({
     password: z.string().min(6)
 })
 
+
 module.exports = {userSchema}

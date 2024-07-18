@@ -25,3 +25,4 @@ mongoose.connect('mongodb+srv://ibrahimumair900:PAK%40zxc123@cluster0.dvaqrpv.mo
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+ 
