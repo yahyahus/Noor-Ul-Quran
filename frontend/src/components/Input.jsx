@@ -19,7 +19,7 @@ export function Input({ email, setEmail, password, setPassword, handleRegister ,
       /><br />
       <button style={{ marginLeft: 5, padding: 5 }} onClick={handleLogin}>Login</button>
       <button style={{ margin:5, padding: 5 }} onClick={handleRegister}>Register</button>
-      {response && <p>{response}</p>} 
+      <p>{response}</p>
 
     </div>
   );

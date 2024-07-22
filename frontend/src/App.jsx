@@ -2,7 +2,7 @@
   import { Input } from './components/Input';
   import { set } from 'mongoose';
 
-  
+
   function App() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,13 +16,14 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ username: email, password: password }), 
+          credentials: 'include'
         });
         const data = await response.json();
         setResponse(data.message);
         console.log(data);
       } catch (error) {
         setResponse('An error occurred');
-        console.error('Error:', error);
+        console.error('Error:', error); 
       }
     };
 
