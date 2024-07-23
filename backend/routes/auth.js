@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { validateRegister } = require('../validation/validation');
+const { validateRegister } = require('../middleware/validate');
 const checkAuth = require('../middleware/session');
 
 
 const secret = 'mysecret';
 const generateToken = (user) => {
   return jwt.sign({ id: user.id }, secret, {
-    expiresIn: 3600,
+    expiresIn: 10,
   });
 };
 

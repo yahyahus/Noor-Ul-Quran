@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const corsOptions = {
   origin: 'http://localhost:5173', // Your frontend URL
@@ -12,7 +13,7 @@ const authRoutes = require('./routes/auth');
 const app = express();
 const PORT = 5000;
 app.use(cors(corsOptions));
-
+app.use(cookieParser()); 
 // Middleware
 app.use(express.json()); 
 
