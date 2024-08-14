@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Input({ email, setEmail, password, setPassword, handleRegister, handleLogin, response, setIsAuthenticated }) {
+export function Input({ email, setEmail, password, setPassword, handleRegister, handleLogin, response,  }) {
   return (
     <div>
       <input
@@ -17,10 +17,7 @@ export function Input({ email, setEmail, password, setPassword, handleRegister, 
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       /><br />
-      <button style={{ marginLeft: 5, padding: 5 }} onClick={() => {
-        handleLogin();
-        setIsAuthenticated(true); // Set isAuthenticated to true on successful login
-      }}>Login</button>
+      <button style={{ marginLeft: 5, padding: 5 }} onClick={handleLogin}>Login</button>
       <button style={{ margin:5, padding: 5 }} onClick={handleRegister}>Register</button>
       <p>{response}</p>
 

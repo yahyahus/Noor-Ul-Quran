@@ -104,7 +104,6 @@ function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [response, setResponse] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
   // useEffect to check for authentication on component mount
   useEffect(() => {
@@ -115,7 +114,6 @@ function App() {
           credentials: 'include',
         });
         if (response.ok) {
-          setIsAuthenticated(true);
           navigate('/portal');
         } else if (response.status === 403) {
           setResponse('Login to continue');
@@ -141,7 +139,6 @@ function App() {
       const data = await response.json();
       setResponse(data.message);
       if (response.ok) {
-        setIsAuthenticated(true);
         navigate('/portal');}
       console.log(data);
     } catch (error) {
@@ -164,7 +161,6 @@ function App() {
       const data = await response.json();
       setResponse(data.message);
       if (response.ok) {
-        setIsAuthenticated(true);
         navigate('/portal');}
 
       console.log(data);
@@ -173,23 +169,13 @@ function App() {
       console.error('Error:', error);
     }
   };
-  return (
-      <Routes>
-        <Route path="/" element={
-          <Input
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            handleRegister={handleRegister}
-            handleLogin={handleLogin}
-            response={response}
-            setIsAuthenticated={setIsAuthenticated} // Pass setIsAuthenticated to Input component
-          />
-        } />
-        <Route path="/portal" element={isAuthenticated ? <PortalPage /> : <Navigate to="/" replace />} />
-      </Routes>
-  );
+    return (
+        <Routes>
+          <Route path="/" element={<Input email={email} setEmail={setEmail} password={password} setPassword={setPassword} handleRegister={handleRegister} handleLogin={handleLogin} response={response} />} />
+          <Route path="/portal" element={<PortalPage />} />
+        </Routes>
+    );
+  
 }
 
 export default App;
