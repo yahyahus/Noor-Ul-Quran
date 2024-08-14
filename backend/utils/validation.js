@@ -1,12 +1,18 @@
-const { userSchema } = require('./zodValidation');
+const { userSchema, usernameSchema, passwordSchema } = require('./zodValidation');
 
 const validateRegister = (req, res, next) => {
-  try {
-    userSchema.parse(req.body);
-    next();
-  } catch (error) {
-    res.status(400).json({ message: error.errors });
-  }
+  
+  if (!(usernameSchema.safeParse(req.body).success))
+    {
+      return res.status(400).json({ message: 'Username should be at least 6 characters.' });
+    }
+  else if (!(passwordSchema.safeParse(req.body).success))
+    {
+      return res.status(400).json({ message: 'Password should be at least 3 characters.' });
+    }
+  next();
+  
+  
 };
 
 module.exports = validateRegister;
