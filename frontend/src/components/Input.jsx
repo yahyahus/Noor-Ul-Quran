@@ -1,26 +1,33 @@
 import React from 'react';
 
-export function Input({ email, setEmail, password, setPassword, handleRegister, handleLogin, response,  }) {
+ function Input({ email, setEmail, password, setPassword, handleRegister, handleLogin, response }) {
   return (
-    <div>
+    <>
+      <div>
       <input
-        style={{ margin: 5, padding: 5 }}
         type="text"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       /><br />
+          </div>
+          <div>
+ 
       <input
-        style={{ margin: 5, padding: 5 }}
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-      /><br />
-      <button style={{ marginLeft: 5, padding: 5 }} onClick={handleLogin}>Login</button>
-      <button style={{ margin:5, padding: 5 }} onClick={handleRegister}>Register</button>
+      />
+      <div>
+            <button  onClick={handleLogin}>Login</button>
+      <button onClick={handleRegister}>Register</button>
       <p>{response}</p>
-
+      </div>
     </div>
+    </>
+
   );
 }
+
+export default Input;
