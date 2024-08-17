@@ -9,11 +9,18 @@ const useAuth = () => {
 
   const checkAuth = async () => {
     try {
+
       const response = await fetch('http://localhost:5000/portal', { method: 'GET', credentials: 'include' });
       if (response.ok) {
         setIsAuthenticated(true);
-      } else if (response.status === 403) {
+        
+
+      } else if (response.status === 403 || response.status === 401) {
         setIsAuthenticated(false);
+
+      }
+      else {
+        console.log(response);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -32,8 +39,13 @@ const useAuth = () => {
       if (response.ok) {
         setIsAuthenticated(true);
         navigate('/portal');
+        return '';
       }
-      return data;
+      if(response.status === 401) {
+        return data;
+        
+      }
+
     } catch (error) {
       console.error('Error:', error);
       return { message: 'An error occurred' };
@@ -52,8 +64,11 @@ const useAuth = () => {
       if (response.ok) {
         setIsAuthenticated(true);
         navigate('/portal');
+        return '';
       }
-      return data;
+      if(response.status === 400) {
+        return data;}
+      // return data;
     } catch (error) {
       console.error('Error:', error);
       return { message: 'An error occurred' };

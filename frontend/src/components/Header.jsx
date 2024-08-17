@@ -1,6 +1,6 @@
 import React from 'react';
 import { Bars3Icon, BellIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/solid'; // Updated import
-
+import Logout from './Logout';
 const Header = ({ toggleSidebar }) => {
   return (
     <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
@@ -8,8 +8,9 @@ const Header = ({ toggleSidebar }) => {
       <div className="md:hidden flex justify-between items-center w-full">
         <div className="text-lg font-bold">Logo</div>
         <button onClick={toggleSidebar} className="text-white">
-          <Bars3Icon className="h-8 w-8" />
+          <Bars3Icon className=" h-8 w-8" />
         </button>
+
       </div>
 
       {/* Desktop View: Logo, Search Bar, Notifications, and Logout */}
@@ -24,9 +25,7 @@ const Header = ({ toggleSidebar }) => {
           <button>
             <BellIcon className="h-6 w-6 text-white" />
           </button>
-          <button>
-            <ArrowLeftOnRectangleIcon className="h-6 w-6 mr-4 text-white" />
-          </button>
+          <Logout/>
         </div>
       </div>
     </header>

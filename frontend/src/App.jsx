@@ -27,15 +27,14 @@ function App() {
   };
 
   return (
-      <Routes>
+    <Routes>
       <Route path="/" element={!isAuthenticated ? <Input email={email} setEmail={setEmail} password={password} setPassword={setPassword} handleRegister={handleRegister} handleLogin={handleLogin} response={response} /> : <Navigate to="/portal" />} />
-      <Route path="/portal/announcements" element={<Announcements />} />
-      <Route path="/portal/settings" element={<Settings />} />
-      <Route path="/portal/support" element={<Support />} />
-      
-        
-        <Route path="/portal" element={isAuthenticated ? <Portal /> : <Navigate to="/" />} />
-      </Routes>
+      <Route path="/portal/announcements" element={isAuthenticated ? <Announcements /> : <Navigate to="/" />} />
+      <Route path="/portal/settings" element={isAuthenticated ? <Settings /> : <Navigate to="/" />} />
+      <Route path="/portal/support" element={isAuthenticated ? <Support /> : <Navigate to="/" />} />
+      <Route path="/portal" element={isAuthenticated ? <Portal /> : <Navigate to="/" />} />
+    </Routes>
+
   );
 }
 

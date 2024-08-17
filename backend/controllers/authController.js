@@ -39,9 +39,35 @@ const generateToken = (user) => {
       res.status(400).json({ message: 'Username already exists' });
     }
   };
-
+  
+  const logout = (req, res) => {
+    if(req.cookies.token) {
+     
+    res.cookie('token', '', { httpOnly: true, secure: false, expires: new Date(0) });
+    
+    return res.status(200).json({ message: 'Logout successful' },);
+    } else if (!req.cookies.token) {
+      return res.status(400).json({ message: 'No token found' });
+    }
+    else {
+      return res.status(400).json({ message: 'Logout failed' });
+    }
+    
+  };
+  
 const portal = (req, res) => {
-  res.status(200).json({ message: 'Welcome to the portal' });
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  jwt.verify(token, secret, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    req.user = user;
+    return res.status(200).json({ message: 'Welcome to the portal' });
+  });
 };
 
-module.exports = { login, register, portal };
+  module.exports = { login, register,portal, logout };
+  
