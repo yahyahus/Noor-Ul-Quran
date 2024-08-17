@@ -25,19 +25,19 @@ const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
           </Link>
         </li>
         <li>
-          <Link to="/announcements" className="hover:bg-gray-700 p-2 rounded flex items-center">
+          <Link to="/portal/announcements" className="hover:bg-gray-700 p-2 rounded flex items-center">
             <MegaphoneIcon className="h-5 w-5 mr-3" />
             Announcements
           </Link>
         </li>
         <li>
-          <Link to="/settings" className="hover:bg-gray-700 p-2 rounded flex items-center">
+          <Link to="/portal/settings" className="hover:bg-gray-700 p-2 rounded flex items-center">
             <CogIcon className="h-5 w-5 mr-3" />
             Settings
           </Link>
         </li>
         <li>
-          <Link to="/support" className="hover:bg-gray-700 p-2 rounded flex items-center">
+          <Link to="/portal/support" className="hover:bg-gray-700 p-2 rounded flex items-center">
             <LifebuoyIcon className="h-5 w-5 mr-3" />
             Support
           </Link>

@@ -3,7 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Input from './components/Input';
 import Portal from './components/Portal';
 import useAuth from './hooks/useAuth'; // Custom hook for authentication
-
+import Announcements from './components/Announcements';
+import Settings from './components/Settings';
+import Support from './components/Support';
 function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +29,10 @@ function App() {
   return (
       <Routes>
       <Route path="/" element={!isAuthenticated ? <Input email={email} setEmail={setEmail} password={password} setPassword={setPassword} handleRegister={handleRegister} handleLogin={handleLogin} response={response} /> : <Navigate to="/portal" />} />
-
+      <Route path="/portal/announcements" element={<Announcements />} />
+      <Route path="/portal/settings" element={<Settings />} />
+      <Route path="/portal/support" element={<Support />} />
+      
         
         <Route path="/portal" element={isAuthenticated ? <Portal /> : <Navigate to="/" />} />
       </Routes>
