@@ -20,7 +20,7 @@ const useAuth = () => {
 
       }
       else {
-        console.log(response);
+        setIsAuthenticated(false);
       }
     } catch (error) {
       console.error('Error:', error);
