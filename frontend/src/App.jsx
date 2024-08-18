@@ -19,11 +19,14 @@ function App() {
   const handleLogin = async () => {
     const result = await login(email, password);
     setResponse(result.message);
+    console.log("Handle Login Ran");
+    
   };
 
   const handleRegister = async () => {
     const result = await register(email, password);
     setResponse(result.message);
+    console.log("Handle Register Ran");
   };
 
   return (

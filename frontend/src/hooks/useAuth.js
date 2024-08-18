@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 const useAuth = () => {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const checkAuth = async () => {
     try {

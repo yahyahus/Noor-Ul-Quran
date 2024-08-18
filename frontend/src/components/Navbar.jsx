@@ -7,6 +7,7 @@ import {
   LifebuoyIcon,
   ArrowLeftOnRectangleIcon,
 } from '@heroicons/react/24/solid';
+import Logout from './Logout';
 
 const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
     return (
@@ -43,9 +44,8 @@ const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
           </Link>
         </li>
         <li>
-          <Link to="/" className="hover:bg-gray-700 p-2 rounded flex items-center">
-            <ArrowLeftOnRectangleIcon className="h-5 w-5 mr-3" />
-            Logout
+          <Link>
+          <Logout/>
           </Link>
         </li>
       </ul>
