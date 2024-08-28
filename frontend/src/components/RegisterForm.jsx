@@ -3,24 +3,17 @@ import React, { useState } from 'react';
 function RegisterForm({ onSubmit, response }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [role, setRole] = useState('student'); // Default to 'student'
 
   const handleSubmit = () => {
-    onSubmit(email, password, name);
+    onSubmit(email, password, role);
   };
 
   return (
     <div className="space-y-4">
       <input
         type="text"
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-      />
-      <input
-        type="email"
-        placeholder="Email"
+        placeholder="Username"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -32,6 +25,15 @@ function RegisterForm({ onSubmit, response }) {
         onChange={(e) => setPassword(e.target.value)}
         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
+      <select
+        value={role}
+        onChange={(e) => setRole(e.target.value)}
+        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      >
+        <option value="student">Student</option>
+        <option value="teacher">Teacher</option>
+        <option value="admin">Admin</option>
+      </select>
       <button
         onClick={handleSubmit}
         className="w-full py-2 font-semibold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"

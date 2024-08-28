@@ -11,18 +11,20 @@ const useAuth = () => {
     try {
 
       const response = await fetch('http://localhost:5000/portal', { method: 'GET', credentials: 'include' });
-      if (response.ok) {
+      if (response.ok)
+        {
         setIsAuthenticated(true);
-        
-
-      } else if (response.status === 403 || response.status === 401) {
+        }
+      else if (response.status === 403 || response.status === 401) {
         setIsAuthenticated(false);
 
       }
-      else {
+      else
+      {
         setIsAuthenticated(false);
       }
-    } catch (error) {
+    } catch (error)
+    {
       console.error('Error:', error);
     }
   };
@@ -52,28 +54,28 @@ const useAuth = () => {
     }
   };
 
-  const register = async (email, password) => {
-    try {
-      const response = await fetch('http://localhost:5000/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: email, password }),
-        credentials: 'include'
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setIsAuthenticated(true);
-        navigate('/portal');
-        return '';
-      }
-      if(response.status === 400) {
-        return data;}
-      // return data;
-    } catch (error) {
-      console.error('Error:', error);
-      return { message: 'An error occurred' };
+const register = async (email, password, role) => {
+  try {
+    const response = await fetch('http://localhost:5000/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: email, password, role }),
+      credentials: 'include'
+    });
+    const data = await response.json();
+    if (response.ok) {
+      setIsAuthenticated(true);
+      navigate('/portal');
+      return '';
     }
-  };
+    if (response.status === 400) {
+      return data;
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    return { message: 'An error occurred' };
+  }
+};
 
   return { isAuthenticated, checkAuth, login, register };
 };
