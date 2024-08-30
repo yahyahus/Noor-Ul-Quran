@@ -4,8 +4,9 @@ const User = require('../models/User');
 const secret = process.env.JWT_SECRET || 'mysecret';
 
 const generateToken = (user) => {
+
   return jwt.sign({ id: user._id }, secret, {
-    expiresIn: '6000',
+    expiresIn: 60, 
   });
 };
 
@@ -14,7 +15,12 @@ const login = async (req, res) => {
   const user = await User.findOne({ username, password });
   if (user) {
     const token = generateToken(user);
-    res.cookie('token', token, { httpOnly: true, secure: true });
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7, 
+        sameSite: 'none',
+     });
     return res.status(200).json({ message: 'Login successful', token });
   } else {
     return res.status(401).json({ message: 'Invalid credentials' });
@@ -22,12 +28,12 @@ const login = async (req, res) => {
 };
   
 
-  const register = async (req, res) => {
-  const { username, password, role } = req.body;
+const register = async (req, res) => {
+  const { username, password, firstname, lastname, role } = req.body;
   const existingUser = await User.findOne({ username });
   if (!existingUser) {
     try {
-      const user = await User.create({ username, password, role });
+      const user = await User.create({ username, password, firstname, lastname, role });
       const token = generateToken(user);
       res.cookie('token', token, { httpOnly: true, secure: true });
       return res.status(200).json({ message: 'User Created', user });
@@ -39,15 +45,15 @@ const login = async (req, res) => {
   }
 };
 
+
   
   const logout = (req, res) => {
     if(req.cookies.token) {
      
-    res.cookie('token', '', { httpOnly: true, secure: false, expires: new Date(0) });
-    
+    res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'none' });
     return res.status(200).json({ message: 'Logout successful' },);
     } else if (!req.cookies.token) {
-      return res.status(400).json({ message: 'No token found' });
+      return res.status(204).json({ message: 'Already logged out' });
     }
     else {
       return res.status(400).json({ message: 'Logout failed' });

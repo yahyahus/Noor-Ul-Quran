@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 
-
 const useAuth = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,12 +53,12 @@ const useAuth = () => {
     }
   };
 
-const register = async (email, password, role) => {
+const register = async (email, password,firstname,lastname, role) => {
   try {
     const response = await fetch('http://localhost:5000/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: email, password, role }),
+      body: JSON.stringify({ username: email, password,firstname,lastname, role }),
       credentials: 'include'
     });
     const data = await response.json();

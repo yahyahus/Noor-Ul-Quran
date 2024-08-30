@@ -8,7 +8,7 @@ const validateRegister = (req, res, next) => {
     }
   else if (!(passwordSchema.safeParse(req.body).success))
     {
-      return res.status(400).json({ message: 'Password should be at least 3 characters.' });
+      return res.status(400).json({ message: 'Password should be at least 6 characters.' });
     }
   next();
   

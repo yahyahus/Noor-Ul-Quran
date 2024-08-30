@@ -6,8 +6,8 @@ function RegisterPage() {
   const { register } = useAuth();
   const [response, setResponse] = React.useState('');
 
-  const handleRegister = async (email, password, name) => {
-    const result = await register(email, password, name);
+  const handleRegister = async (email, password,firstname,lastname, role) => {
+    const result = await register(email, password,firstname,lastname, role);
     setResponse(result.message);
   };
 

@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 function LoginForm({ onSubmit, response }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [readOnly, setReadOnly] = useState(true);
+  const [error, setError] = useState('');
   const handleSubmit = () => {
     onSubmit(email, password);
   };
@@ -14,14 +15,23 @@ function LoginForm({ onSubmit, response }) {
         type="email"
         placeholder="Email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        //temporary fix for email field
+                      readOnly={readOnly}
+                      onFocus={ () => setReadOnly(false) }
+                      onBlur={ () => setReadOnly(true) }
+    onChange={(e) => setEmail(e.target.value)}
         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
       <input
         type="password"
         placeholder="Password"
         value={password}
+        //temporary fix for password field
+                      readOnly={readOnly}
+                      onFocus={ () => setReadOnly(false) }
+                      onBlur={ () => setReadOnly(true) }
         onChange={(e) => setPassword(e.target.value)}
+
         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
       <button
