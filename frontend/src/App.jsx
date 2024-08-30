@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
-import Portal from './components/Portal';
-import Announcements from './components/Announcements';
-import Settings from './components/Settings';
-import Support from './components/Support';
+import Portal from './components/features/Portal';
+import Announcements from './components/features/Announcements';
+import Settings from './components/features/Settings';
+import Support from './components/features/Support';
 import useAuth from './hooks/useAuth'; // Custom hook for authentication
 
 function App() {

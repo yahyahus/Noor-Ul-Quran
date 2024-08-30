@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Header from './Header';
-import Navbar from './Navbar';
+import Header from '../Header';
+import Navbar from '../Navbar';
 
-const Portal = () => {
+const Settings = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -15,7 +15,7 @@ const Portal = () => {
       <div className="flex flex-1">
         <Navbar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <main className="flex-1 p-8">
-          <h1 className="text-3xl font-semibold mb-4 text-gray-800">Welcome to the Portal</h1>
+          <h1 className="text-3xl font-semibold mb-4 text-gray-800">Welcome to the Settings</h1>
           {/* Main content goes here */}
         </main>
       </div>
@@ -23,4 +23,4 @@ const Portal = () => {
   );
 };
 
-export default Portal;
+export default Settings;

@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import useAuth from '../hooks/useAuth';
-
+//import useAuth from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { login } from './services/authService';
 function LoginPage() {
-  const { login } = useAuth();
+  // const { login } = useAuth();
   const [response, setResponse] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [readOnly, setReadOnly] = useState(true);
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const result = await login(email, password);
+    const result = await login(email, password,navigate);
     setResponse(result.message);
   };
 
