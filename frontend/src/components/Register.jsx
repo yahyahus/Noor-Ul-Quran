@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setRole } from '../store/slices/roleSlice'; // Import setRole
+import { register } from './services/authService';
 
-// import useAuth from '../hooks/useAuth';
-import {register} from './services/authService';
 function RegisterPage() {
- // const { register } = useAuth();
+  const dispatch = useDispatch();
+  const role = useSelector((state) => state.role); // Access the global role state
+
   const [response, setResponse] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('student');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-    
-    const result = await register(email, password, firstname, lastname, role, navigate);
+    const result = await register(email, password, firstname, lastname, navigate);
     setResponse(result.message);
+    if (!result.success) {
+      setResponse(result.message); // Display the error message
+    }
+  
   };
 
   return (
@@ -47,6 +52,7 @@ function RegisterPage() {
             onChange={(e) => setEmail(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
+
           <input
             type="password"
             placeholder="Password"
@@ -54,9 +60,10 @@ function RegisterPage() {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
+
           <select
             value={role}
-            onChange={(e) => setRole(e.target.value)}
+            onChange={(e) => dispatch(setRole(e.target.value))} // Update the global role state
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="student">Student</option>

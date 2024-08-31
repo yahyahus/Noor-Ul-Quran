@@ -4,7 +4,7 @@ const validateRegister = (req, res, next) => {
   
   if (!(usernameSchema.safeParse(req.body).success))
     {
-      return res.status(400).json({ message: 'Username should be at least 6 characters.' });
+      return res.status(400).json({ message: 'Username should be at least 3 characters.' });
     }
   else if (!(passwordSchema.safeParse(req.body).success))
     {

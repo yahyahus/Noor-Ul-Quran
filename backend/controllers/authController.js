@@ -12,6 +12,7 @@ const generateToken = (user) => {
 
 const login = async (req, res) => {
   const { username, password } = req.body;
+  console.log('Request Body:', req.body);
   const user = await User.findOne({ username, password });
   if (user) {
     const token = generateToken(user);
@@ -30,16 +31,22 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   const { username, password, firstname, lastname, role } = req.body;
+  console.log('Request Body:', req.body);
+
   const existingUser = await User.findOne({ username });
   if (!existingUser) {
     try {
       const user = await User.create({ username, password, firstname, lastname, role });
+      console.log(role);
+
       const token = generateToken(user);
       res.cookie('token', token, { httpOnly: true, secure: true });
       return res.status(200).json({ message: 'User Created', user });
-    } catch (err) {
+    }catch (err) {
+      console.error('Error during user creation:', err); // Log the full error
       res.status(400).json({ message: 'User Creation failed', error: err.message });
     }
+
   } else {
     res.status(400).json({ message: 'Username already exists' });
   }
@@ -64,7 +71,7 @@ const register = async (req, res) => {
 const portal = (req, res) => {
   const token = req.cookies.token;
   if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(406).json({ message: 'Unauthorized' });
   }
   jwt.verify(token, secret, (err, user) => {
     if (err) {
