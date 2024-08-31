@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-//import useAuth from '../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Import Link
 import { login } from './services/authService';
+
 function LoginPage() {
-  // const { login } = useAuth();
   const [response, setResponse] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,7 +10,7 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const result = await login(email, password,navigate);
+    const result = await login(email, password, navigate);
     setResponse(result.message);
   };
 
@@ -47,6 +46,13 @@ function LoginPage() {
             Login
           </button>
           {response && <p className="text-center text-red-500">{response}</p>}
+          {/* Link to Register page */}
+          <p className="text-center text-gray-600">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-blue-500 hover:underline">
+              Register
+            </Link>
+          </p>
         </div>
       </div>
     </div>
