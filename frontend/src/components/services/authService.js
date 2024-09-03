@@ -21,7 +21,7 @@ export const login = async (email, password, navigate) => {
       return { success: false, message: data.message };
     }
   } catch (error) {
-    console.error('Error:', error);
+    //console.error('Error:', error);
     return { success: false, message: 'An error occurred' };
   }
 };

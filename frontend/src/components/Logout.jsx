@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { setAuthenticated } from '../../src/store/slices/authSlice.js';
+import { useDispatch } from 'react-redux';
 function Logout() {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
       const response = await fetch('http://localhost:5000/logout', {
@@ -12,6 +13,7 @@ function Logout() {
       });
 
       if (response.ok) {
+        dispatch(setAuthenticated(false));
         navigate('/');
       } else {
         console.log(response);
