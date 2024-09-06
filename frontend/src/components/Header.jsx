@@ -32,6 +32,11 @@ const Header = ({ toggleSidebar }) => {
         {role === 'student' && (<button>
             <BellIcon className="h-6 w-6 text-white" />
           </button> )}
+
+          <div>
+            {role}
+          </div>
+
           <Logout/>
         </div>
       </div>
