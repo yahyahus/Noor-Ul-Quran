@@ -16,6 +16,7 @@ const navItems = {
   { name: 'Sabak/Manzil', path: '/portal/sabak', icon: ArrowLeftOnRectangleIcon },
   { name: 'Profile', path: '/portal/profile', icon: CogIcon },
   { name: 'Notifications', path: '/portal/notifications', icon: MegaphoneIcon },
+  {name: 'Settings', path: '/portal/settings', icon: CogIcon },
   ],
   teacher: [
     { name: 'Dashboard', path: '/portal/dashboard', icon: ChartBarIcon },

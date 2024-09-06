@@ -5,7 +5,7 @@ const secret = process.env.JWT_SECRET || 'mysecret';
 
 const generateToken = (user) => {
 
-  return jwt.sign({ id: user._id }, secret, {
+  return jwt.sign({ id: user._id, role: user.role}, secret, {
     expiresIn: 60, 
   });
 };
@@ -41,7 +41,7 @@ const register = async (req, res) => {
 
       const token = generateToken(user);
       res.cookie('token', token, { httpOnly: true, secure: true });
-      return res.status(200).json({ message: 'User Created', user });
+      return res.status(200).json({ message: 'User Created', user, token, role: user.role });
     }catch (err) {
       console.error('Error during user creation:', err); // Log the full error
       res.status(400).json({ message: 'User Creation failed', error: err.message });
@@ -65,10 +65,9 @@ const register = async (req, res) => {
     else {
       return res.status(400).json({ message: 'Logout failed' });
     }
-    
   };
-  
-const portal = (req, res) => {
+
+  const isloggedin = (req, res) => {
   const token = req.cookies.token;
   if (!token) {
     return res.status(406).json({ message: 'Unauthorized' });
@@ -78,9 +77,12 @@ const portal = (req, res) => {
       return res.status(403).json({ message: 'Forbidden' });
     }
     req.user = user;
-    return res.status(200).json({ message: 'Welcome to the portal' });
+    return res.status(200).json({ message: 'Welcome to the portal', role: user.role });
   });
-};
+}
 
-  module.exports = { login, register,portal, logout };
+
+
+
+  module.exports = { login, register,isloggedin, logout };
   
