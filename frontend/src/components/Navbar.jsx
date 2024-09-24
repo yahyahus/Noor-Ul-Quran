@@ -20,7 +20,7 @@ const navItems = {
   ],
   teacher: [
     { name: 'Dashboard', path: '/portal/dashboard', icon: ChartBarIcon },
-    {name : 'Attendance', path: '/portal/attendance', icon: LifebuoyIcon},
+    { name: 'Students', path: '/portal/teacher-students', icon: ArrowLeftOnRectangleIcon },
     { name: 'Assign Sabak/Manzil', path: '/portal/assign', icon: CogIcon },
     { name: 'Class Progress', path: '/portal/progress', icon: ChartBarIcon },
     { name: 'Notifications', path: '/portal/notifications', icon: MegaphoneIcon },

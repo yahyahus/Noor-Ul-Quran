@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 const Header = ({ toggleSidebar }) => {
   const role = useSelector((state) => {
     
-    console.log(state.role); 
     return state.role;
   });
     return (

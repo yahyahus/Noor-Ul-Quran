@@ -10,11 +10,13 @@ const generateToken = (user) => {
   });
 };
 
+
 const login = async (req, res) => {
   const { username, password } = req.body;
   console.log('Request Body:', req.body);
   const user = await User.findOne({ username, password });
-  if (user) {
+  if (user) 
+    {
     const token = generateToken(user);
     res.cookie('token', token, {
         httpOnly: true,

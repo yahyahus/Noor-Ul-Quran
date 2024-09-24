@@ -11,9 +11,10 @@ export const login = async (email, password, navigate) => {
       credentials: 'include',
     });
     const data = await response.json();
-    if (response.ok) {
+    if (response.ok)
+      {
       store.dispatch(setAuthenticated(true));
-      store.dispatch(setRole(data.role)); // Dispatch the user's role
+      store.dispatch(setRole(data.role));
       navigate('/portal');
       return { success: true };
     }
