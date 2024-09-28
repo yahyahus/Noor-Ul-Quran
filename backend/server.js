@@ -5,6 +5,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./router/authRoutes');
 const teacherRoutes = require('./router/TeacherRouter');
+const adminRoutes = require('./router/adminRouter');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,8 +17,10 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 
+
 app.use('/', authRoutes);
 app.use('/teacher', teacherRoutes);
+app.use('/admin', adminRoutes);
 app.get('/', (req, res) => {
   res.send('Welcome to the backend API!');
 });

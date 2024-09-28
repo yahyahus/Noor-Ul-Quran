@@ -27,11 +27,14 @@ const navItems = {
   ],
   admin: [
     { name: 'Dashboard', path: '/portal/dashboard', icon: ChartBarIcon },
-    { name: 'User Management', path: '/portal/users', icon: ArrowLeftOnRectangleIcon },
+    { name: 'Unassigned Students', path: '/portal/unassigned-students', icon: ArrowLeftOnRectangleIcon },
     { name: 'Content Management', path: '/portal/content', icon: CogIcon },
     { name: 'Role Management', path: '/portal/roles', icon: ChartBarIcon },
     { name: 'Reports & Analytics', path: '/portal/reports', icon: MegaphoneIcon },
-    { name: 'System Settings', path: '/portal/settings', icon: CogIcon },]
+
+
+  ],
+
 };
 
 const Navbar = ({ isSidebarOpen, toggleSidebar }) => {

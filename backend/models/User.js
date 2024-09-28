@@ -24,35 +24,55 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     studentInfo: {
-        type: {
-            teacherId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-                default: null, // explicitly set default to null
-            },
-            // Add other fields for studentInfo as necessary
+        teacherId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            default: null, // explicitly set default to null
         },
-        default: null, // Set default to null if not populated
     },
     teacherInfo: {
-        type: {
-            students: [{
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-                default: [] // default to an empty array if no students
-            }],
-            // Add other fields for teacherInfo as necessary
-        },
-        default: null, // Set default to null if not populated
+        students: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            default: [], // default to an empty array if no students
+        }],
+        // Add other fields for teacherInfo as necessary
     },
     adminInfo: {
-        type: {
-            // Add fields for adminInfo as necessary
-        },
-        default: null, // Set default to null if not populated
+        // Add fields for adminInfo as necessary
     },
 }, {
     timestamps: true,
 });
+//what does the below code do?
+//A: The below code is a pre-save middleware that runs before saving a document to the database. It checks the role of the user and initializes the corresponding info object (studentInfo, teacherInfo, or adminInfo) if it is not already present. This ensures that the info objects are always present and avoids potential errors when accessing or updating them later.
 
+userSchema.pre('save', function (next) {
+    // Ensure only the respective role info is initialized
+    if (this.role === 'student') {
+        if (!this.studentInfo) {
+            this.studentInfo = {}; // Initialize studentInfo if not present
+        }
+        this.teacherInfo = null; // Set other role fields to null
+        this.adminInfo = null;
+    }
+
+    if (this.role === 'teacher') {
+        if (!this.teacherInfo) {
+            this.teacherInfo = { students: [] }; // Initialize teacherInfo with an empty students array
+        }
+        this.studentInfo = null;
+        this.adminInfo = null;
+    }
+
+    if (this.role === 'admin') {
+        if (!this.adminInfo) {
+            this.adminInfo = {}; // Initialize adminInfo if not present
+        }
+        this.studentInfo = null;
+        this.teacherInfo = null;
+    }
+
+    next();
+});
 module.exports = mongoose.model('User', userSchema);

@@ -31,10 +31,10 @@ function TeacherStudents() {
               </tr>
             </thead>
             <tbody>
-              {students.map((student) => (
-                <tr key={student._id}> {/* Use _id as the unique key */}
-                  <td>{student.firstname}</td> {/* Display firstname */}
-                  <td>{student.lastname}</td> {/* Display lastname */}
+              {students.map((student,index) => (
+                <tr key={student._id||index}>
+                  <td>{student.firstname}</td>
+                  <td>{student.lastname}</td>
                 </tr>
               ))}
             </tbody>

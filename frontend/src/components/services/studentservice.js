@@ -6,7 +6,8 @@ const fetchStudents = async () => {
         credentials: 'include',
       });
   
-      if (response.ok) {
+      if (response.ok) 
+      {
         const data = await response.json();
         return data; 
       } else {
@@ -19,5 +20,7 @@ const fetchStudents = async () => {
     }
   };
   
+ 
+
   export { fetchStudents };
   
