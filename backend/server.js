@@ -4,9 +4,9 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./router/authRoutes');
-const teacherRoutes = require('./router/TeacherRouter');
+const teacherRoutes = require('./router/teacherRouter');
 const adminRoutes = require('./router/adminRouter');
-
+const generalroutes = require('./router/generalRouter');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -19,6 +19,7 @@ app.use(express.json());
 
 
 app.use('/', authRoutes);
+app.use('/', generalroutes);
 app.use('/teacher', teacherRoutes);
 app.use('/admin', adminRoutes);
 app.get('/', (req, res) => {

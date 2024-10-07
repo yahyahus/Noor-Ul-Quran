@@ -8,4 +8,7 @@ const { getStudentsForTeacher, assignStudentToTeacher } = require('../controller
 router.get('/get-students', authenticateToken, checkRole('teacher'), getStudentsForTeacher);
 router.post('/assign-student', authenticateToken, checkRole('admin'), assignStudentToTeacher);
 
+
+
+
 module.exports = router;
