@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const Holiday = require('../models/Holiday');
+ 
 
 const getUnassignedStudents = async (req, res) => {
     try {
@@ -74,9 +76,37 @@ const assignStudent = async (req, res) => {
     }
 
 };
+const addHoliday = async (req, res) => {
+    const { date, description, isWeekendOpen } = req.body;
 
-       
+    try {
+        // Convert the date to proper format to avoid issues with different formats
+        const holidayDate = new Date(date);
+
+        // Check if the holiday already exists
+        const existingHoliday = await Holiday.findOne({ date: holidayDate });
+        if (existingHoliday) {
+            return res.status(400).json({ message: 'Holiday already exists on this date.' });
+        }
+
+        // Create a new holiday
+        const newHoliday = new Holiday({
+            date: holidayDate,
+            description: description || '', // Optional description
+            isHoliday: true,  // Default to true since it's a holiday
+            isWeekendOpen: isWeekendOpen || false, // Optional field for marking certain weekends as working
+        });
+
+        // Save the holiday to the database
+        await newHoliday.save();
+
+        res.status(201).json({ message: 'Holiday added successfully', holiday: newHoliday });
+    } catch (error) {
+        console.error('Error adding holiday:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
 
 module.exports = {
-    getUnassignedStudents, getTeachers, assignStudent
+    getUnassignedStudents, getTeachers, assignStudent, addHoliday
 };

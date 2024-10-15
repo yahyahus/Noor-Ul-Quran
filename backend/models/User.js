@@ -44,11 +44,8 @@ const userSchema = new mongoose.Schema({
 }, {
     timestamps: true,
 });
-//what does the below code do?
-//A: The below code is a pre-save middleware that runs before saving a document to the database. It checks the role of the user and initializes the corresponding info object (studentInfo, teacherInfo, or adminInfo) if it is not already present. This ensures that the info objects are always present and avoids potential errors when accessing or updating them later.
 
 userSchema.pre('save', function (next) {
-    // Ensure only the respective role info is initialized
     if (this.role === 'student') {
         if (!this.studentInfo) {
             this.studentInfo = {}; // Initialize studentInfo if not present
