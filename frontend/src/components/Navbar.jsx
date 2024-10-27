@@ -12,23 +12,23 @@ import Logout from './Logout';
 
 const navItems = {
   student: [
-  { name: 'Dashboard', path: '/portal/dashboard', icon: ChartBarIcon },
+  { name: 'Dashboard', path: '/portal', icon: ChartBarIcon },
   { name: 'Sabak/Manzil', path: '/portal/sabak', icon: ArrowLeftOnRectangleIcon },
   { name: 'Profile', path: '/portal/profile', icon: CogIcon },
   { name: 'Notifications', path: '/portal/notifications', icon: MegaphoneIcon },
   {name: 'Settings', path: '/portal/settings', icon: CogIcon },
   ],
   teacher: [
-    { name: 'Dashboard', path: '/portal/dashboard', icon: ChartBarIcon },
+    { name: 'Dashboard', path: '/portal/teacher/dashboard', icon: ChartBarIcon },
     { name: 'Students', path: '/portal/teacher-students', icon: ArrowLeftOnRectangleIcon },
     { name: 'Assign Sabak/Manzil', path: '/portal/assign', icon: CogIcon },
     { name: 'Mark Attendance', path: '/portal/mark-attendance', icon: ChartBarIcon },
     { name: 'Notifications', path: '/portal/notifications', icon: MegaphoneIcon },
   ],
   admin: [
-    { name: 'Dashboard', path: '/portal/dashboard', icon: ChartBarIcon },
+    { name: 'Dashboard', path: '/portal/admin/dashboard', icon: ChartBarIcon },
     { name: 'Unassigned Students', path: '/portal/unassigned-students', icon: ArrowLeftOnRectangleIcon },
-    { name: 'Content Management', path: '/portal/content', icon: CogIcon },
+    { name: 'Add Student or Teacher', path: '/portal/add-user', icon: CogIcon },
     { name: 'Role Management', path: '/portal/roles', icon: ChartBarIcon },
     { name: 'Reports & Analytics', path: '/portal/reports', icon: MegaphoneIcon },
 

@@ -20,7 +20,5 @@ const fetchStudents = async () => {
     }
   };
   
- 
-
   export { fetchStudents };
   
