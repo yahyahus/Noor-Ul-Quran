@@ -21,6 +21,7 @@ const getAttendance = async (month, year) => {
 
 const markAttendance = async (studentId, date, status) => {
     try {
+        console.log('Marking attendance:', studentId, date, status);
         const response = await fetch('http://localhost:5000/teacher/mark-attendance', {
             method: 'POST',
             credentials: 'include',
@@ -32,6 +33,7 @@ const markAttendance = async (studentId, date, status) => {
 
         if (response.ok) {
             const data = await response.json();
+            console.log('Attendance marked successfully:', data);
             return data;
         } else {
             console.error('Failed to mark attendance');

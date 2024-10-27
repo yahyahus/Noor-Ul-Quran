@@ -27,6 +27,7 @@ import ProtectedRoute from './components/ProtectedRoute'; function App() {
       <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/portal" />} />
       <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/portal" />} />
       <Route path="/portal" element={isAuthenticated ? <Portal /> : <Navigate to="/login" />} />
+      
       <Route path="/portal/teacher-students" element={<ProtectedRoute element={<TeacherStudents />} allowedRoles={['teacher']} />}/>
       <Route path="/portal/unassigned-students" element={<ProtectedRoute element={<UnassignedStudentsList />} allowedRoles={['admin']} />}/>
       <Route path="/portal/mark-attendance" element={<ProtectedRoute element={<Attendance />} allowedRoles={['teacher']} />}/>

@@ -80,8 +80,12 @@ const addHoliday = async (req, res) => {
     const { date, description, isWeekendOpen } = req.body;
 
     try {
-        // Convert the date to proper format to avoid issues with different formats
-        const holidayDate = new Date(date);
+        // Split the input date to 'YYYY-MM-DD' format
+        const [year, month, day] = date.split('-');
+        
+        // Create a date object using UTC
+        const holidayDate = new Date(Date.UTC(year, month - 1, day)).toISOString().split('T')[0];
+        
 
         // Check if the holiday already exists
         const existingHoliday = await Holiday.findOne({ date: holidayDate });
@@ -91,7 +95,7 @@ const addHoliday = async (req, res) => {
 
         // Create a new holiday
         const newHoliday = new Holiday({
-            date: holidayDate,
+            date: holidayDate, // Store date directly as string
             description: description || '', // Optional description
             isHoliday: true,  // Default to true since it's a holiday
             isWeekendOpen: isWeekendOpen || false, // Optional field for marking certain weekends as working
@@ -106,6 +110,7 @@ const addHoliday = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
 
 module.exports = {
     getUnassignedStudents, getTeachers, assignStudent, addHoliday

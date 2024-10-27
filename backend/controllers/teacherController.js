@@ -57,67 +57,59 @@ const getStudentsForTeacher = async (req, res) => {
 
     res.status(200).json(studentNames);
   } catch (error) {
-    console.error('Error fetching students for teacher:', error); // Log the error for debugging
+    console.error('Error fetching students for teacher:', error); 
     res.status(500).json({ message: 'Server error' });
   }
 };
-
-
 const markAttendance = async (req, res) => {
-  
-  const { studentId, date, status } = req.body;
-  const teacherId = req.user.id; // the teacher is authenticated 
-  
-  try 
-  {
+  const { studentId, date, status } = req.body; 
+  const teacherId = req.user.id; 
+
+  try {
     const student = await User.findById(studentId);
-    
-    if (!student || student.role !== 'student') 
-    {
+
+    if (!student || student.role !== 'student') {
       return res.status(404).json({ message: 'Student not found' });
     }
-    // Check if the student is assigned to the teacher
-    if (student.studentInfo.teacherId.toString() !== teacherId) 
-    {
+
+    if (student.studentInfo.teacherId.toString() !== teacherId) {
       return res.status(403).json({ message: 'Student is not assigned to you' });
     }
 
-    //check if the attendance is already marked, if yes, then update the status else create a new attendance
+    // Treat the date as a string to avoid any timezone conversion
     const existingAttendance = await Attendance.findOne({
       studentId,
       teacherId,
-      date,
+      date, // Just compare as string
     });
 
-    if (existingAttendance) 
-    {
-      existingAttendance.status = status;
-      await existingAttendance.save();
+    if (existingAttendance) {
+      await Attendance.findOneAndUpdate(
+        { studentId, teacherId, date },
+        { status }
+      );
       res.status(200).json({ message: 'Attendance updated successfully' });
-    } 
-    else 
-    {
+    } else {
       await Attendance.create({
         studentId,
         teacherId,
-        date,
+        date, // Store as string
         status,
       });
+
+      console.log(`Attendance marked for student ${studentId} on ${date}`);
       res.status(200).json({ message: 'Attendance marked successfully' });
     }
-
-    
-  }
-  catch (error) 
-  {
+  } catch (error) {
     console.error('Error marking attendance:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 const getMonthlyAttendance = async (req, res) => {
-  const { month, year } = req.query;  // Take month and year as query params
-  const teacherId = req.user.id;      // Teacher is authenticated
-  
+  const { month, year } = req.query;  
+  const teacherId = req.user.id;
+
   try {
     // Get the working days for the given month
     const workingDays = await getWorkingDays(month, year);
@@ -134,61 +126,33 @@ const getMonthlyAttendance = async (req, res) => {
       };
 
       for (const date of workingDays) {
-        // Normalize the date to 'YYYY-MM-DD' format to ignore time for comparison
-        const normalizedDate = new Date(date).toISOString().split('T')[0];
+        // Convert working day strings to 'YYYY-MM-DD' format
+        const normalizedDate = new Date(date).toISOString().split('T')[0]; 
 
         // Find the attendance for the student on the given date
         const attendance = await Attendance.findOne({
           studentId: student._id,
           teacherId,
-          date: {
-            $gte: new Date(normalizedDate + 'T00:00:00.000Z'),
-            $lte: new Date(normalizedDate + 'T23:59:59.999Z')
-          }
+          date: normalizedDate // Use normalizedDate to match the Attendance model format
         });
 
-        studentAttendance.attendance.push({
-          date: normalizedDate,
-          status: attendance ? attendance.status : 'Not Marked',
-        });
+        if (attendance) {
+          studentAttendance.attendance.push({
+            date: normalizedDate,
+            status: attendance.status
+          });
+        }
       }
-
       students.push(studentAttendance);
     }
 
     res.status(200).json({ students });
-
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error fetching monthly attendance:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-
-//How does getMonthlyAttendance return the attendance of all students for a given month?
-// sample output of getMonthlyAttendance
-// {
-//   students: [
-//     {
-//       id: 'student1',
-//       name: 'John Doe',
-//       attendance: [
-//         { date: '2022-01-01', status: 'P' },
-//         { date: '2022-01-02', status: 'A' },
-//         ...
-//       ],
-//     },
-//     {
-//       id: 'student2',
-//       name: 'Jane Doe',
-//       attendance: [
-//         { date: '2022-01-01', status: 'P' },
-//         { date: '2022-01-02', status: 'P' },
-//         ...
-//       ],
-//     },
-//     ...
-//   ],
-// }
 
 module.exports = { getStudentsForTeacher, assignStudentToTeacher, markAttendance, getMonthlyAttendance };
