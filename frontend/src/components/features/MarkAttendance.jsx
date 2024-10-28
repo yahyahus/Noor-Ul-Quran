@@ -135,7 +135,7 @@ const MarkAttendance = () => {
                                     <tbody>
                                         {attendanceData.map((student) => (
                                             <tr key={student.id}>
-                                                <td className="py-2 px-4 border-b">{student.name}</td>
+                                                <td className="py-2 px-4 border-b ">{student.name}</td>
                                                 {workingDays.map((date) => {
                                                     const attendance = student.attendance.find((att) => new Date(att.date).toDateString() === new Date(date).toDateString());
                                                     return (

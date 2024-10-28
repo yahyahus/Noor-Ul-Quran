@@ -7,6 +7,7 @@ const authRoutes = require('./router/authRoutes');
 const teacherRoutes = require('./router/teacherRouter');
 const adminRoutes = require('./router/adminRouter');
 const generalroutes = require('./router/generalRouter');
+const studentRoutes = require('./router/studentRouter');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -22,6 +23,8 @@ app.use('/', authRoutes);
 app.use('/', generalroutes);
 app.use('/teacher', teacherRoutes);
 app.use('/admin', adminRoutes);
+app.use('/student', studentRoutes);
+
 app.get('/', (req, res) => {
   res.send('Welcome to the backend API!');
 });

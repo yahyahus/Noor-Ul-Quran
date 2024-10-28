@@ -23,22 +23,24 @@ function TeacherStudents() {
         <Navbar />
         <main className="flex-1 p-8">
           <h1 className="text-3xl font-semibold mb-4 text-gray-800">Students</h1>
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th className="text-left">Firstname</th>
-                <th className="text-left">Lastname</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((student,index) => (
-                <tr key={student._id||index}>
-                  <td>{student.firstname}</td>
-                  <td>{student.lastname}</td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
+              <thead>
+                <tr>
+                  <th className="text-left py-2 px-4 border-b-2 border-gray-300 text-gray-600">Firstname</th>
+                  <th className="text-left py-2 px-4 border-b-2 border-gray-300 text-gray-600">Lastname</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {students.map((student, index) => (
+                  <tr key={student._id || index} className="hover:bg-gray-100">
+                    <td className="py-2 px-4 border-b border-gray-300">{student.firstname}</td>
+                    <td className="py-2 px-4 border-b border-gray-300">{student.lastname}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </main>
       </div>
     </div>

@@ -7,5 +7,7 @@ router.get('/unassigned-students', authenticateToken, checkRole('admin'), getUna
 router.get('/get-teachers', authenticateToken, checkRole('admin'), getTeachers);
 router.post('/assign-student', authenticateToken, checkRole('admin'), assignStudent);
 router.post('/add-holiday',addHoliday );
+
+
 module.exports = router;
 
