@@ -59,5 +59,23 @@ const fetchUnassignedStudents = async () => {
 
 };
 
+const createStudent = async (username, password, firstname, lastname) => {
+  try {
+    const response = await fetch('http://localhost:5000/admin/create-student', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password, firstname, lastname }),
+    });
 
-    export { fetchUnassignedStudents, fetchTeachers, assignStudent};
+    const data = await response.json();
+    return { success: response.ok, message: data.message || 'Student created successfully' };
+  } catch (error) {
+    console.error('Failed to create student', error);
+    return { success: false, message: 'Failed to create student' };
+  }
+};
+
+    export { fetchUnassignedStudents, fetchTeachers, assignStudent, createStudent};

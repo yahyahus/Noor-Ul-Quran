@@ -110,8 +110,42 @@ const addHoliday = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+const createStudent = async (req, res) => {
+    const { username, password, firstname, lastname, role = 'student' } = req.body;
+
+    // Basic validation
+    if (!username || !password || !firstname || !lastname) {
+        return res.status(400).json({ message: 'All fields are required: username, password, firstname, lastname' });
+    }
+
+    try {
+        // Check if a user with the same username already exists
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Username already exists.' });
+        }
+
+        // Create new user with the role defaulting to teacher
+        const newUser = new User({
+            username,
+            password, // Ideally, hash the password before saving
+            firstname,
+            lastname,
+            role
+        });
+
+        // Save the user to the database
+        await newUser.save();
+
+        res.status(201).json({ message: 'User created successfully', user: newUser });
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 
 
 module.exports = {
-    getUnassignedStudents, getTeachers, assignStudent, addHoliday
+    getUnassignedStudents, getTeachers, assignStudent, addHoliday, createStudent
 };
