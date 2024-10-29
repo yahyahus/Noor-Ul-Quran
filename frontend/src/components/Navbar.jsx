@@ -21,7 +21,7 @@ const navItems = {
   teacher: [
     { name: 'Dashboard', path: '/portal/teacher/dashboard', icon: ChartBarIcon },
     { name: 'Students', path: '/portal/teacher-students', icon: ArrowLeftOnRectangleIcon },
-    { name: 'Assign Sabak/Manzil', path: '/portal/assign', icon: CogIcon },
+    { name: 'Mark Progress', path: '/portal/mark-progress', icon: CogIcon },
     { name: 'Mark Attendance', path: '/portal/mark-attendance', icon: ChartBarIcon },
     { name: 'Notifications', path: '/portal/notifications', icon: MegaphoneIcon },
   ],

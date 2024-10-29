@@ -11,6 +11,7 @@ import TeacherStudents from './components/features/TeacherStudents.jsx';
 import Attendance from './components/features/MarkAttendance.jsx';
 import UnassignedStudentsList from './components/features/UnassignedStudentsList.jsx';
 import ViewAttendance from './components/features/ViewAttendance.jsx';
+import MarkProgress from './components/features/MarkProgress.jsx';
 import { setAuthenticated } from '../src/store/slices/authSlice.js';
 import { checkAuth } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute'; function App() {
@@ -33,6 +34,7 @@ import ProtectedRoute from './components/ProtectedRoute'; function App() {
       <Route path="/portal/unassigned-students" element={<ProtectedRoute element={<UnassignedStudentsList />} allowedRoles={['admin']} />}/>
       <Route path="/portal/mark-attendance" element={<ProtectedRoute element={<Attendance />} allowedRoles={['teacher']} />}/>
       <Route path="/portal/attendance" element={<ProtectedRoute element={<ViewAttendance />} allowedRoles={['student']} />}/>
+      <Route path="/portal/mark-progress" element={<ProtectedRoute element={<MarkProgress />} allowedRoles={['teacher']} />}/>
 
       <Route path="/portal/announcements" element={isAuthenticated ? <Announcements /> : <Navigate to="/login" />} />
       <Route path="/portal/settings" element={isAuthenticated ? <Settings /> : <Navigate to="/login" />} />
