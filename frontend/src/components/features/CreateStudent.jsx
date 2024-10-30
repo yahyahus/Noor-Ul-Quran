@@ -1,4 +1,3 @@
-// CreateStudent.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createStudent } from '../services/adminService';
@@ -24,53 +23,52 @@ function CreateStudent() {
         if (result.success) {
             setResponse('Student created successfully!');
             navigate('/portal'); // Redirect to portal or another page if successful
-        }
-        else{
+        } else {
             setResponse(result.message || 'Failed to create student.');
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-800">
-            <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold text-center mb-6">Create New Student</h2>
+        <div className="flex items-center justify-center min-h-screen bg-gray-200">
+            <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-xl transform transition-all hover:scale-105">
+                <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Create New Student</h2>
                 <div className="space-y-4">
                     <input
                         type="text"
                         placeholder="First Name"
                         value={firstname}
                         onChange={(e) => setFirstname(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                     />
                     <input
                         type="text"
                         placeholder="Last Name"
                         value={lastname}
                         onChange={(e) => setLastname(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                     />
                     <input
                         type="text"
                         placeholder="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                     />
                     <input
                         type="password"
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                     />
                     <button
                         onClick={handleCreateStudent}
-                        className="w-full py-2 font-semibold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className="w-full py-2 font-semibold text-white bg-gradient-to-r from-gray-700 to-gray-900 rounded-lg hover:bg-gradient-to-l focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-200"
                     >
                         Create Student
                     </button>
                     {error && <p className="text-center text-red-500 mt-4">{error}</p>}
-                    {response && <p className="text-center text-red-500">{response}</p>}
+                    {response && <p className="text-center text-red-500 mt-4">{response}</p>}
                 </div>
             </div>
         </div>

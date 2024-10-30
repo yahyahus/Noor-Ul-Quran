@@ -145,6 +145,7 @@ const createStudent = async (req, res) => {
 };
 
 
+
 module.exports = {
     getUnassignedStudents, getTeachers, assignStudent, addHoliday, createStudent
 };

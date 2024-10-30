@@ -79,7 +79,7 @@ const UnassignedStudentsList = () => {
                             )}
                             <button
                                 onClick={handleAssignClick}
-                                className={`bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-md ${
+                                className={`bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded shadow-md ${
                                     selectedStudents.length === 0 && isAssignMode ? 'opacity-50 cursor-not-allowed' : ''
                                 }`}
                                 disabled={selectedStudents.length === 0 && isAssignMode}
