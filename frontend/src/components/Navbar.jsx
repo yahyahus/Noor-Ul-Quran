@@ -5,6 +5,7 @@ import {
   ChartBarIcon,
   MegaphoneIcon,
   CogIcon,
+  UserPlusIcon,
   LifebuoyIcon,
   ArrowLeftOnRectangleIcon,
 } from '@heroicons/react/24/solid';
@@ -28,7 +29,7 @@ const navItems = {
   admin: [
     { name: 'Dashboard', path: '/portal/admin/dashboard', icon: ChartBarIcon },
     { name: 'Unassigned Students', path: '/portal/unassigned-students', icon: ArrowLeftOnRectangleIcon },
-    { name: 'Add Student or Teacher', path: '/portal/add-user', icon: CogIcon },
+    { name: 'Create Student', path: '/portal/create-student', icon: UserPlusIcon },
     { name: 'Role Management', path: '/portal/roles', icon: ChartBarIcon },
     { name: 'Reports & Analytics', path: '/portal/reports', icon: MegaphoneIcon },
 

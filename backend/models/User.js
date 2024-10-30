@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -45,31 +46,39 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-userSchema.pre('save', function (next) {
-    if (this.role === 'student') {
-        if (!this.studentInfo) {
-            this.studentInfo = {}; // Initialize studentInfo if not present
+userSchema.pre('save', async function (next) {
+    try {
+        // Only hash the password if it has been modified (new or updated)
+        if (this.isModified('password')) {
+            const salt = await bcrypt.genSalt(10);
+            this.password = await bcrypt.hash(this.password, salt);
         }
-        this.teacherInfo = null; // Set other role fields to null
-        this.adminInfo = null;
-    }
 
-    if (this.role === 'teacher') {
-        if (!this.teacherInfo) {
-            this.teacherInfo = { students: [] }; // Initialize teacherInfo with an empty students array
+        // Role-specific initialization
+        if (this.role === 'student') {
+            if (!this.studentInfo) {
+                this.studentInfo = {}; // Initialize studentInfo if not present
+            }
+            this.teacherInfo = null;
+            this.adminInfo = null;
+        } else if (this.role === 'teacher') {
+            if (!this.teacherInfo) {
+                this.teacherInfo = { students: [] };
+            }
+            this.studentInfo = null;
+            this.adminInfo = null;
+        } else if (this.role === 'admin') {
+            if (!this.adminInfo) {
+                this.adminInfo = {}; // Initialize adminInfo if not present
+            }
+            this.studentInfo = null;
+            this.teacherInfo = null;
         }
-        this.studentInfo = null;
-        this.adminInfo = null;
-    }
 
-    if (this.role === 'admin') {
-        if (!this.adminInfo) {
-            this.adminInfo = {}; // Initialize adminInfo if not present
-        }
-        this.studentInfo = null;
-        this.teacherInfo = null;
+        next();
+    } catch (error) {
+        next(error);
     }
-
-    next();
 });
+
 module.exports = mongoose.model('User', userSchema);
