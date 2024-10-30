@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; // Import Link
+import { useNavigate, Link } from 'react-router-dom';
 import { login } from './services/authService';
 
 function LoginPage() {
@@ -15,9 +15,9 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gray-200">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-xl transform transition-all hover:scale-105">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Login to Noor-Ul-Quran</h2>
         <div className="space-y-4">
           <input
             type="email"
@@ -27,7 +27,7 @@ function LoginPage() {
             onFocus={() => setReadOnly(false)}
             onBlur={() => setReadOnly(true)}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
           />
           <input
             type="password"
@@ -37,11 +37,11 @@ function LoginPage() {
             onFocus={() => setReadOnly(false)}
             onBlur={() => setReadOnly(true)}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
           />
           <button
             onClick={handleLogin}
-            className="w-full py-2 font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full py-2 font-semibold text-white bg-gradient-to-r from-gray-700 to-gray-600 rounded-lg hover:bg-gradient-to-l focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200"
           >
             Login
           </button>
@@ -49,7 +49,7 @@ function LoginPage() {
           {/* Link to Register page */}
           <p className="text-center text-gray-600">
             Don't have an account?{' '}
-            <Link to="/register" className="text-blue-500 hover:underline">
+            <Link to="/register" className="text-gray-700 hover:underline font-semibold">
               Register
             </Link>
           </p>
