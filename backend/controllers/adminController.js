@@ -145,44 +145,6 @@ const createStudent = async (req, res) => {
 };
 
 
-const createStudent = async (req, res) => {
-    const { name, email, password, role, teacherId } = req.body;
-
-    try {
-        const user = new User({ 
-            name,
-            email,
-            password,
-            role,
-            studentInfo: {           
-                teacherId: teacherId || null,
-            },
-        });
-       
-
-        await user.save();
-
-        if (teacherId) {
-            const teacher = await User.findById(teacherId);
-
-            if (teacher) {
-                teacher.teacherInfo.students.push(user._id);
-                await teacher.save();
-            }
-            else {
-                console.error('Teacher not found');
-                return res.status(404).json({ message: 'Teacher not found' });
-            }
-        }
-
-        res.status(201).json({ message: 'Student added successfully', student: user });
-    } catch (error) {
-        console.error('Error adding student:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-}
-
-
 module.exports = {
     getUnassignedStudents, getTeachers, assignStudent, addHoliday, createStudent
 };
