@@ -20,6 +20,8 @@ const radialData = [
 const StudentDashboard = () => {
   const surahName = "Al-Baqarah";
   const juzNumber = 2;
+  const weeklyGoal = 120; // Example weekly goal (e.g., memorize 30 lines of Quran)
+  const linesCompleted = 50; // Example completed lines
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -29,8 +31,8 @@ const StudentDashboard = () => {
         <main className="flex-1 p-8 overflow-auto">
           <h1 className="text-3xl font-semibold mb-6 text-black">Student Dashboard</h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
             {/* Current Surah and Juz Card */}
             <div className="bg-white p-6 rounded-lg shadow-lg max-w-xs">
               <h2 className="text-lg font-bold text-black-600">Current Position</h2>
@@ -71,7 +73,24 @@ const StudentDashboard = () => {
                 </RadialBarChart>
               </ResponsiveContainer>
             </div>
-            
+
+            {/* Weekly Goals Card */}
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-xs">
+              <h2 className="text-lg font-bold text-black-600">Weekly Goals</h2>
+              <div className="mt-4">
+                <p className="text-teal-600 font-semibold text-xl">Goal: {weeklyGoal} Lines</p>
+                <Box className="flex items-center mt-2">
+                  <Box className="w-full bg-gray-300 h-2 rounded-full">
+                    <Box className="bg-teal-500 h-2 rounded-full" style={{ width: `${(linesCompleted / weeklyGoal) * 100}%` }} />
+                  </Box>
+                </Box>
+                <p className="text-teal-500 font-medium text-lg mt-2">Completed: {linesCompleted}/{weeklyGoal}</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6 mt-6">
             {/* Sabaq Line Chart and Sabqi/Manzil Progress */}
             <div className="bg-white p-6 rounded-lg shadow-lg col-span-1 md:col-span-2">
               <h2 className="text-xl font-bold text-black-600 mb-4">Sabaq Lines & Sabqi/Manzil Progress</h2>
