@@ -4,15 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import Login from './components/Login';
 import Register from './components/Register';
 import Portal from './components/features/Portal';
-import Announcements from './components/features/Announcements';
-import Settings from './components/features/Settings';
-import Support from './components/features/Support';
 import TeacherStudents from './components/features/TeacherStudents.jsx';
 import Attendance from './components/features/MarkAttendance.jsx';
 import UnassignedStudentsList from './components/features/UnassignedStudentsList.jsx';
 import ViewAttendance from './components/features/ViewAttendance.jsx';
 import MarkProgress from './components/features/MarkProgress.jsx';
 import CreateStudent from './components/features/CreateStudent';
+import AdminDashboard from './components/features/AdminDashboard';
+import StudentDashboard from './components/features/StudentDashboard';
 import { setAuthenticated } from '../src/store/slices/authSlice.js';
 import { checkAuth } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute'; function App() {
@@ -37,10 +36,9 @@ import ProtectedRoute from './components/ProtectedRoute'; function App() {
       <Route path="/portal/attendance" element={<ProtectedRoute element={<ViewAttendance />} allowedRoles={['student']} />}/>
       <Route path="/portal/mark-progress" element={<ProtectedRoute element={<MarkProgress />} allowedRoles={['teacher']} />}/>
       <Route path="/portal/create-student" element={<ProtectedRoute element={<CreateStudent />} allowedRoles={['admin']} />} />
+      <Route path="/portal/admin/dashboard" element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={['admin']} />} />
+      <Route path="/portal/student/dashboard" element={<ProtectedRoute element={<StudentDashboard />} allowedRoles={['student']} />} />
 
-      <Route path="/portal/announcements" element={isAuthenticated ? <Announcements /> : <Navigate to="/login" />} />
-      <Route path="/portal/settings" element={isAuthenticated ? <Settings /> : <Navigate to="/login" />} />
-      <Route path="/portal/support" element={isAuthenticated ? <Support /> : <Navigate to="/login" />} />
     </Routes>
   );``
 }

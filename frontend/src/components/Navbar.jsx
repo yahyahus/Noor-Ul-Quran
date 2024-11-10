@@ -1,63 +1,63 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { List, ListItem, ListItemIcon, ListItemText, Box } from '@mui/material';
+import { Dashboard, Notifications, Settings, Group, Assessment } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import {
-  ChartBarIcon,
-  MegaphoneIcon,
-  CogIcon,
-  UserPlusIcon,
-  LifebuoyIcon,
-  ArrowLeftOnRectangleIcon,
-} from '@heroicons/react/24/solid';
-import Logout from './Logout';
+
 
 const navItems = {
   student: [
-  { name: 'Dashboard', path: '/portal', icon: ChartBarIcon },
-  { name: 'Sabak/Manzil', path: '/portal/sabak', icon: ArrowLeftOnRectangleIcon },
-  { name: 'Attendance', path: '/portal/attendance', icon: CogIcon },
-  { name: 'Notifications', path: '/portal/notifications', icon: MegaphoneIcon },
-  {name: 'Settings', path: '/portal/settings', icon: CogIcon },
+    { name: 'Dashboard', path: '/portal/student/dashboard', icon: <Dashboard /> },
+    { name: 'Sabak/Manzil', path: '/portal/sabak', icon: <Group /> },
+    { name: 'Attendance', path: '/portal/attendance', icon: <Assessment /> },
+    { name: 'Notifications', path: '/portal/notifications', icon: <Notifications /> },
+    { name: 'Settings', path: '/portal/settings', icon: <Settings /> },
   ],
   teacher: [
-    { name: 'Dashboard', path: '/portal/teacher/dashboard', icon: ChartBarIcon },
-    { name: 'Students', path: '/portal/teacher-students', icon: ArrowLeftOnRectangleIcon },
-    { name: 'Mark Progress', path: '/portal/mark-progress', icon: CogIcon },
-    { name: 'Mark Attendance', path: '/portal/mark-attendance', icon: ChartBarIcon },
-    { name: 'Notifications', path: '/portal/notifications', icon: MegaphoneIcon },
+    { name: 'Dashboard', path: '/portal/teacher/dashboard', icon: <Dashboard /> },
+    { name: 'Students', path: '/portal/teacher-students', icon: <Group /> },
+    { name: 'Mark Progress', path: '/portal/mark-progress', icon: <Assessment /> },
+    { name: 'Mark Attendance', path: '/portal/mark-attendance', icon: <Notifications /> },
   ],
   admin: [
-    { name: 'Dashboard', path: '/portal/admin/dashboard', icon: ChartBarIcon },
-    { name: 'Unassigned Students', path: '/portal/unassigned-students', icon: ArrowLeftOnRectangleIcon },
-    { name: 'Create Student', path: '/portal/create-student', icon: UserPlusIcon },
-    { name: 'Role Management', path: '/portal/roles', icon: ChartBarIcon },
-    { name: 'Reports & Analytics', path: '/portal/reports', icon: MegaphoneIcon },
-
-
+    { name: 'Dashboard', path: '/portal/admin/dashboard', icon: <Dashboard /> },
+    { name: 'Unassigned Students', path: '/portal/unassigned-students', icon: <Group /> },
+    { name: 'Create Student', path: '/portal/create-student', icon: <Assessment /> },
+    { name: 'Settings', path: '/portal/settings', icon: <Settings /> },
   ],
-
 };
 
-const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
+const Navbar = () => {
   const role = useSelector((state) => state.role);
-  const items = navItems[role] || []; // Get nav items based on role
+  const items = navItems[role] || [];
 
   return (
-    <nav className={`bg-gray-800 text-white min-h-screen p-4 fixed top-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:transform-none md:static md:w-64 md:block md:min-h-screen`}>
-      <ul className="space-y-4">
+    <Box
+      component="nav"
+      sx={{
+        width: { xs: '200px', md: '240px' },
+        bgcolor: 'grey.100',
+        height: '100vh',
+        boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <List>
         {items.map((item) => (
-          <li key={item.name}>
-            <Link to={item.path} className="hover:bg-gray-700 p-2 rounded flex items-center">
-              <item.icon className="h-5 w-5 mr-3" />
-              {item.name}
-            </Link>
-          </li>
+          <ListItem
+            button
+            key={item.name}
+            component={Link}
+            to={item.path}
+            sx={{
+              '&:hover': { bgcolor: 'grey.200' },
+            }}
+          >
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.name} />
+          </ListItem>
         ))}
-        <li>
-          <Logout />
-        </li>
-      </ul>
-    </nav>
+      </List>
+    </Box>
   );
 };
 
