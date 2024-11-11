@@ -61,13 +61,15 @@ const StudentDashboard = () => {
                     dataKey="value"
                   />
                   <Legend
-                    iconSize={10}
+                    iconSize={16}
                     layout="vertical"
-                    verticalAlign="middle"
+                    verticalAlign="bottom"
                     align="center"
                     wrapperStyle={{
-                      fontSize: '12px',
+                      fontSize: '14px',
                       fontWeight: 'bold',
+                      marginTop: '10px',
+                      lineHeight: '1.8'
                     }}
                   />
                 </RadialBarChart>

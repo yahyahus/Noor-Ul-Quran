@@ -22,7 +22,7 @@ const navItems = {
   admin: [
     { name: 'Dashboard', path: '/portal/admin/dashboard', icon: <Dashboard /> },
     { name: 'Unassigned Students', path: '/portal/unassigned-students', icon: <Group /> },
-    { name: 'Create Student', path: '/portal/create-student', icon: <Assessment /> },
+    { name: 'Create User', path: '/portal/create-student', icon: <Assessment /> },
     { name: 'Settings', path: '/portal/settings', icon: <Settings /> },
   ],
 };
