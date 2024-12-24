@@ -1,10 +1,11 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setAuthenticated } from '../../src/store/slices/authSlice.js';
 import { useDispatch } from 'react-redux';
-function Logout() {
+import { setAuthenticated } from '../../src/store/slices/authSlice.js';
+
+export const useLogoutHelper = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const handleLogout = async () => {
     try {
       const response = await fetch('http://localhost:5000/logout', {
@@ -24,14 +25,5 @@ function Logout() {
     }
   };
 
-  return (
-    <button
-      onClick={handleLogout}
-      className="px-4 py-2 font-semibold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:ring focus:ring-red-300"
-    >
-      Logout
-    </button>
-  );
-}
-
-export default Logout;
+  return handleLogout;
+};
