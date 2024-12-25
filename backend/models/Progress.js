@@ -17,16 +17,37 @@ const progressSchema = new mongoose.Schema({
     required: true,
   },
   sabaq: {
-    type: Boolean,
-    default: false, // Marks completion status, initially false
+    completed : Boolean, 
+    numberOfLines: Number,
+    startingSurah : {
+      number : Number,
+      name : String,
+    },
+    endingSurah : {
+      number : Number,
+      name : String,
+    },
+    startingAyah : Number,
+    endingAyah : Number,
+    remarks: String,
   },
   sabqi: {
-    type: Boolean,
-    default: false,
+    completed : Boolean, 
+    juzz: {
+      number : Number,
+      name : String,
+    },
+    quality: Number,
+    remarks: String, 
   },
   manzil: {
-    type: Boolean,
-    default: false,
+    completed : Boolean, 
+    juzz : {
+      number : Number,
+      name : String,
+    },
+    quality: Number,
+    remarks: String,
   },
 });
 

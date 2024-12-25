@@ -45,7 +45,7 @@ const markAttendance = async (studentId, date, status) => {
     }
 };
 
-const markSabaq = async (studentId, date) => {
+const markSabaq = async (studentId, date, sabaqDetails) => {
     try {
         const response = await fetch('http://localhost:5000/teacher/mark-sabaq', {
             method: 'POST',
@@ -53,7 +53,11 @@ const markSabaq = async (studentId, date) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ studentId, date }),
+            body: JSON.stringify({
+                studentId,
+                date,
+                sabaq: sabaqDetails, // Include all sabaq fields (completed, numberOfLines, etc.)
+            }),
         });
 
         if (response.ok) {
@@ -64,14 +68,13 @@ const markSabaq = async (studentId, date) => {
             console.error('Failed to mark sabaq');
             return { message: 'Failed to mark sabaq' };
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Failed to mark sabaq', error);
         return { message: 'Failed to mark sabaq' };
     }
 };
 
-const markSabqi = async (studentId, date) => {
+const markSabqi = async (studentId, date, sabqiDetails) => {
     try {
         const response = await fetch('http://localhost:5000/teacher/mark-sabqi', {
             method: 'POST',
@@ -79,7 +82,11 @@ const markSabqi = async (studentId, date) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ studentId, date }),
+            body: JSON.stringify({
+                studentId,
+                date,
+                sabqi: sabqiDetails, // Include all sabqi fields (completed, juzz, quality, etc.)
+            }),
         });
 
         if (response.ok) {
@@ -90,14 +97,14 @@ const markSabqi = async (studentId, date) => {
             console.error('Failed to mark sabqi');
             return { message: 'Failed to mark sabqi' };
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Failed to mark sabqi', error);
         return { message: 'Failed to mark sabqi' };
     }
 };
 
-const markManzil = async (studentId, date) => {
+
+const markManzil = async (studentId, date, manzilDetails) => {
     try {
         const response = await fetch('http://localhost:5000/teacher/mark-manzil', {
             method: 'POST',
@@ -105,7 +112,11 @@ const markManzil = async (studentId, date) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ studentId, date }),
+            body: JSON.stringify({
+                studentId,
+                date,
+                manzil: manzilDetails, // Include all manzil fields (completed, juzz, quality, etc.)
+            }),
         });
 
         if (response.ok) {
@@ -116,12 +127,12 @@ const markManzil = async (studentId, date) => {
             console.error('Failed to mark manzil');
             return { message: 'Failed to mark manzil' };
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Failed to mark manzil', error);
         return { message: 'Failed to mark manzil' };
     }
 };
+
 
 const getProgress = async (month, year) => {
     try {
