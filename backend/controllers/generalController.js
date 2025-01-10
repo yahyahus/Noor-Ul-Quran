@@ -1,4 +1,5 @@
 const holiday = require('../models/Holiday');
+const Progress = require('../models/Progress');
 
 const getWorkingDays = async (month, year) => {
     // Validate month and year input
@@ -57,7 +58,26 @@ const getWorkingDaysApi = async (req, res) => {
     }
 };
 
+const getProgress = async(req,res) => {
+    const {studentId,date} = req.query;
+
+    try{
+        const progress = await Progress.find({
+            studentId: studentId,
+            date: date,
+        });
+        res.status(200).json(progress);
+
+}
     
+    catch(error){
+        console.error('Failed to fetch progress:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+
+}; 
+
+
 
   
 

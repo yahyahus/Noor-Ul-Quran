@@ -5,7 +5,7 @@ const fetchStudents = async () => {
         method: 'GET',
         credentials: 'include',
       });
-  
+
       if (response.ok) 
       {
         const data = await response.json();
@@ -19,6 +19,26 @@ const fetchStudents = async () => {
       return [];
     }
   };
+  const fetchStudentProgress = async (date) => {
+    try {
+      const response = await fetch(`http://localhost:5000/teacher/get-student-progress?date=${date}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data; // Return the progress data
+      } else {
+        console.error('Failed to fetch student progress');
+        return []; // Return an empty array in case of failure
+      }
+    } catch (error) {
+      console.error('Failed to fetch student progress', error);
+      return [];
+    }
+  };
+  
 
   const fetchAttendance = async (month, year) => {
     try {
@@ -41,5 +61,5 @@ const fetchStudents = async () => {
   }
 
   
-  export { fetchStudents, fetchAttendance };
+  export { fetchStudents, fetchAttendance, fetchStudentProgress };
   

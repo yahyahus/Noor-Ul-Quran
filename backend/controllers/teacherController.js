@@ -39,8 +39,6 @@ const assignStudentToTeacher = async (req, res) => {
   }
 };
 
-
-
 const getStudentsForTeacher = async (req, res) => {
   try {
     const teacherId = req.user.id; 
@@ -155,12 +153,11 @@ const getMonthlyAttendance = async (req, res) => {
   }
 };
 const markSabaq = async (req, res) => {
-  const {
-    studentId,
-    date,
-    sabaq: { completed, numberOfLines, startingSurah, endingSurah, startingAyah, endingAyah, remarks },
-  } = req.body; // Accept all sabaq fields from request
+  const { studentId, date, sabaq: sabaqDetails } = req.body; // Directly take `sabaqDetails` from request body
   const teacherId = req.user.id;
+
+  // Logging the sabaq details received from the frontend
+  console.log('Received sabaq details:', sabaqDetails);
 
   try {
     // Ensure the student exists and has the role 'student'
@@ -178,35 +175,51 @@ const markSabaq = async (req, res) => {
     const existingProgress = await Progress.findOne({ studentId, teacherId, date });
 
     if (existingProgress) {
-      // Return the existing sabaq logic (not modifying it as per your requirement)
-      return res.status(200).json({ message: 'Sabaq already exists', sabaq: existingProgress.sabaq });
-    } else {
-      // Create a new progress document for the student and date
-      const newProgress = await Progress.create({
-        studentId,
-        teacherId,
-        date,
-        sabaq: {
-          completed,
-          numberOfLines,
-          startingSurah,
-          endingSurah,
-          startingAyah,
-          endingAyah,
-          remarks,
-        },
-         //initializing sabqi and manzil as null
-         sabqi: null,
-         manzil: null
+      // If sabaq already exists, return it without modifying
+      return res.status(200).json({
+        message: 'Sabaq already exists for this date',
+        sabaq: existingProgress.sabaq,
       });
-
-      res.status(201).json({ message: 'Sabaq marked successfully', progress: newProgress });
     }
+
+    // Create a new progress document with sabaq details
+    const newProgress = await Progress.create({
+      studentId,
+      teacherId,
+      date,
+      sabaq: {
+        completed: sabaqDetails.completed,
+        numberOfLines: parseInt(sabaqDetails.numberOfLines, 10), // Convert to number
+        startingSurah: {
+          number: parseInt(sabaqDetails.startingSurahNumber, 10), // Explicitly map number
+          name: sabaqDetails.startingSurah,
+        },
+        endingSurah: {
+          number: parseInt(sabaqDetails.endingSurahNumber, 10), // Explicitly map number
+          name: sabaqDetails.endingSurah,
+        },
+        startingAyah: parseInt(sabaqDetails.startingAyah, 10), // Convert to number
+        endingAyah: parseInt(sabaqDetails.endingAyah, 10), // Convert to number
+        remarks: sabaqDetails.remarks,
+      },
+      sabqi: null, // Initialize sabqi and manzil as null
+      manzil: null,
+    });
+
+    // Respond with success
+    res.status(201).json({
+      message: 'Sabaq marked successfully',
+      progress: newProgress,
+    });
+
+    // Logging the new progress created
+    console.log('New progress logged:', newProgress);
   } catch (error) {
     console.error('Error marking sabaq:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 const markSabqi = async (req, res) => {
   const {
@@ -368,6 +381,85 @@ const getMonthlyProgress = async (req, res) => {
   }
 };
 
+const getStudentsProgressForDate = async (req, res) => {
+  try {
+    const teacherId = req.user.id; // Assuming the teacher is authenticated
+    const { date } = req.query; // Date provided in the query parameters
+
+    if (!date) {
+      return res.status(400).json({ message: 'Date is required' });
+    }
+
+    // Fetch the teacher and their students
+    const teacher = await User.findById(teacherId).populate('teacherInfo.students');
+    if (!teacher) {
+      return res.status(404).json({ message: 'Teacher not found' });
+    }
+
+    // Extract student IDs and details
+    const students = teacher.teacherInfo.students.map(student => ({
+      _id: student._id,
+      firstname: student.firstname,
+      lastname: student.lastname,
+    }));
+
+    // Fetch progress for all students for the specified date
+    const progressData = await Progress.find({
+      teacherId,
+      studentId: { $in: students.map(student => student._id) },
+      date,
+    }).populate('studentId', 'firstname lastname'); // Populate student details if needed
+
+    // Standardize the response format
+    const result = students.map(student => {
+      const studentProgress = progressData.find(
+        progress => progress.studentId._id.toString() === student._id.toString()
+      );
+
+      return {
+        studentId: student._id,
+        firstname: student.firstname,
+        lastname: student.lastname,
+        date, // The date being queried
+        sabaq: studentProgress?.sabaq?.completed
+          ? {
+              completed: true,
+              startingSurah: studentProgress.sabaq.startingSurah,
+              endingSurah: studentProgress.sabaq.endingSurah,
+              numberOfLines: studentProgress.sabaq.numberOfLines,
+              startingAyah: studentProgress.sabaq.startingAyah,
+              endingAyah: studentProgress.sabaq.endingAyah,
+              remarks: studentProgress.sabaq.remarks,
+            }
+          : { completed: false },
+        sabqi: studentProgress?.sabqi?.completed
+          ? {
+              completed: true,
+              juzz: studentProgress.sabqi.juzz,
+              quality: studentProgress.sabqi.quality,
+              remarks: studentProgress.sabqi.remarks,
+            }
+          : { completed: false },
+        manzil: studentProgress?.manzil?.completed
+          ? {
+              completed: true,
+              juzz: studentProgress.manzil.juzz,
+              quality: studentProgress.manzil.quality,
+              remarks: studentProgress.manzil.remarks,
+            }
+          : { completed: false },
+      };
+    });
+
+    //logging the result
+    console.log(result);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error fetching progress data:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 
-module.exports = { getStudentsForTeacher, assignStudentToTeacher, markAttendance, getMonthlyAttendance , markSabaq, markSabqi, markManzil, getMonthlyProgress };
+
+module.exports = { getStudentsForTeacher, assignStudentToTeacher, markAttendance, getMonthlyAttendance , markSabaq, markSabqi, markManzil, getMonthlyProgress , getStudentsProgressForDate};

@@ -58,9 +58,11 @@ const markSabaq = async (studentId, date, sabaqDetails) => {
                 date,
                 sabaq: sabaqDetails, // Include all sabaq fields (completed, numberOfLines, etc.)
             }),
+
         });
 
         if (response.ok) {
+            console.log('Marking sabaq:', studentId, date, sabaqDetails);
             const data = await response.json();
             console.log('Sabaq marked successfully:', data);
             return data;
