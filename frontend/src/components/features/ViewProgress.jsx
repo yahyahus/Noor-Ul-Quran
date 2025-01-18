@@ -11,7 +11,7 @@ import Header from "../Header";
 import Navbar from "../Navbar";
 
 const StatusBadge = ({ completed }) => (
-  <Badge 
+  <Badge
     variant="outline" 
     className={`text-xs ${
       completed 
