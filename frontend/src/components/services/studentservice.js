@@ -19,26 +19,27 @@ const fetchStudents = async () => {
       return [];
     }
   };
-  const fetchStudentProgress = async (date) => {
+const fetchStudentProgress = async (date) => {
     try {
-      const response = await fetch(`http://localhost:5000/teacher/get-student-progress?date=${date}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        return data; // Return the progress data
-      } else {
+        const response = await fetch(
+            `http://localhost:5000/teacher/get-student-progress?date=${date}`,
+            {
+                method: 'GET',
+                credentials: 'include',
+            }
+        );
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        }
         console.error('Failed to fetch student progress');
-        return []; // Return an empty array in case of failure
-      }
+        return [];
     } catch (error) {
-      console.error('Failed to fetch student progress', error);
-      return [];
+        console.error('Failed to fetch student progress', error);
+        return [];
     }
-  };
-  
+};
 
   const fetchAttendance = async (month, year) => {
     try {
@@ -60,6 +61,33 @@ const fetchStudents = async () => {
     }
   }
 
+
+  const getProgress = async (date) => {
+    try {
+        const response = await fetch(`http://localhost:5000/student/view-progress?date=${date}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            console.log('Fetching progress for date:', date);
+            const data = await response.json();
+            console.log('Progress fetched successfully:', data);
+            return data;
+        } else {
+            const errorData = await response.json();
+            console.error('Failed to fetch progress:', errorData.message);
+            return { message: errorData.message || 'Failed to fetch progress' };
+        }
+    } catch (error) {
+        console.error('Error fetching progress:', error);
+        return { message: 'Failed to fetch progress' };
+    }
+};
+
   
-  export { fetchStudents, fetchAttendance, fetchStudentProgress };
+  export { fetchStudents, fetchAttendance, fetchStudentProgress , getProgress};
   

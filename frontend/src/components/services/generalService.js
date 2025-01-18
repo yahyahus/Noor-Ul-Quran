@@ -17,4 +17,23 @@ const getWorkingDays = async (month, year) => {
     }
 };
 
-export { getWorkingDays };
+const fetchJuzzNames = async () => {
+    try {
+        const response = await fetch('http://localhost:5000/fetch-juzz-names', {
+            method: 'GET',
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            console.error('Failed to fetch juzz names');
+            return [];
+        }
+    } catch (error) {
+        console.error('Failed to fetch juzz names', error);
+        return [];
+    }
+}
+
+export { getWorkingDays , fetchJuzzNames };

@@ -14,6 +14,7 @@ import AdminDashboard from './components/features/AdminDashboard';
 import StudentDashboard from './components/features/StudentDashboard';
 import TeacherDashboard from './components/features/TeacherDashboard';
 import { setAuthenticated } from '../src/store/slices/authSlice.js';
+import ViewProgress from './components/features/ViewProgress.jsx';
 import { checkAuth } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute'; function App() {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ import ProtectedRoute from './components/ProtectedRoute'; function App() {
       <Route path="/portal/admin/dashboard" element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={['admin']} />} />
       <Route path="/portal/student/dashboard" element={<ProtectedRoute element={<StudentDashboard />} allowedRoles={['student']} />} />
       <Route path="/portal/teacher/dashboard" element={<ProtectedRoute element={<TeacherDashboard />} allowedRoles={['teacher']} />} />
+      <Route path="/portal/view-progress" element={<ProtectedRoute element={<ViewProgress />} allowedRoles={['student']} />} />
 
     </Routes>
   );``

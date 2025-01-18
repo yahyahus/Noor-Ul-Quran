@@ -33,21 +33,19 @@ const progressSchema = new mongoose.Schema({
   },
   sabqi: {
     completed : Boolean, 
-    // juzz: {
-    //   number : Number,
-    //   name : String,
-    // },
-    juzz: Number,
+    juzz: {
+      number : Number,
+      name : String,
+    },
     quality: Number,
     remarks: String, 
-  },
+  },  
   manzil: {
     completed : Boolean, 
-    // juzz : {
-    //   number : Number,
-    //   name : String,
-    // },
-    juzz: Number,
+    juzz : {
+      number : Number,
+      name : String,
+    },
     quality: Number,
     remarks: String,
   },

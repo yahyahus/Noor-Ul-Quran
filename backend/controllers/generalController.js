@@ -58,27 +58,21 @@ const getWorkingDaysApi = async (req, res) => {
     }
 };
 
-const getProgress = async(req,res) => {
-    const {studentId,date} = req.query;
 
+// a function that fetches the names of the juzz, which are stored in ../Data/juzzNames.json
+
+
+const fetchJuzzNames = async (req,res) => {
     try{
-        const progress = await Progress.find({
-            studentId: studentId,
-            date: date,
-        });
-        res.status(200).json(progress);
-
-}
-    
+        const juzzNames = require('../Data/juzzNames.json');
+        res.status(200).json(juzzNames);
+    }
     catch(error){
-        console.error('Failed to fetch progress:', error);
+        console.error('Failed to fetch juzz names:', error);
         res.status(500).json({ message: 'Server error' });
     }
-
-}; 
-
-
+};
 
   
 
-module.exports = { getWorkingDays, getWorkingDaysApi };
+module.exports = { getWorkingDays, getWorkingDaysApi , fetchJuzzNames};

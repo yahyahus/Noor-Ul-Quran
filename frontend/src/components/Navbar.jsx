@@ -24,7 +24,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet";
 const navItems = {
   student: [
     { name: "Dashboard", path: "/portal/student/dashboard", icon: LayoutDashboard },
-    { name: "Sabak/Manzil", path: "/portal/sabak", icon: BookOpen },
+    { name: "View Progress", path: "/portal/view-progress", icon: BookOpen },
     { name: "Attendance", path: "/portal/attendance", icon: Calendar },
     { name: "Notifications", path: "/portal/notifications", icon: Bell },
     { name: "Settings", path: "/portal/settings", icon: Settings },

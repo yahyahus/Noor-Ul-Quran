@@ -221,55 +221,120 @@ const markSabaq = async (req, res) => {
 };
 
 
+// const markSabqi = async (req, res) => {
+//   const {
+//     studentId,
+//     date,
+//     sabqi: { completed, juzz, quality, remarks }, // Accept sabqi details from the request body
+//   } = req.body;
+//   const teacherId = req.user.id;
+
+//   try {
+//     // Ensure the student exists and has the role 'student'
+//     const student = await User.findById(studentId);
+//     if (!student || student.role !== 'student') {
+//       return res.status(404).json({ message: 'Student not found' });
+//     }
+
+//     // Check if the student is assigned to the logged-in teacher
+//     if (student.studentInfo.teacherId.toString() !== teacherId) {
+//       return res.status(403).json({ message: 'Student is not assigned to you' });
+//     }
+
+//     // Find the existing progress document for the given student and date
+//     const existingProgress = await Progress.findOne({ studentId, teacherId, date });
+
+//     if (existingProgress) {
+//       // Update the sabqi details for the existing document
+//       existingProgress.sabqi = {
+//         completed,
+//         juzz,
+//         quality,
+//         remarks,
+//       };
+//       await existingProgress.save();
+//       res.status(200).json({ message: 'Sabqi progress updated successfully', progress: existingProgress });
+//     } else {
+//       // Create a new progress document for the student and date
+//       const newProgress = await Progress.create({
+//         studentId,
+//         teacherId,
+//         date,
+//         sabaq: null, // Initialize sabaq as null
+//         sabqi: {
+//           completed,
+//           juzz,
+//           quality,
+//           remarks,
+//         },
+//         manzil: null, // Initialize manzil as null
+//       });
+
+//       res.status(201).json({ message: 'Sabqi progress marked successfully', progress: newProgress });
+//     }
+//   } catch (error) {
+//     console.error('Error marking sabqi progress:', error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
+
+//re-writing the markSabqi function but now with juzzName also present in the request body
+//the db schema has the following structure for sabqi:
+/*  sabqi: {
+    completed : Boolean, 
+    juzz: {
+      number : Number,
+      name : String,
+    },
+    quality: Number,
+    remarks: String, 
+  },
+*/
+// Now, re-writing the modified markSabqi function
 const markSabqi = async (req, res) => {
-  const {
-    studentId,
-    date,
-    sabqi: { completed, juzz, quality, remarks }, // Accept sabqi details from the request body
-  } = req.body;
+  const { studentId, date, sabqi: sabqiDetails } = req.body;
   const teacherId = req.user.id;
 
   try {
-    // Ensure the student exists and has the role 'student'
     const student = await User.findById(studentId);
     if (!student || student.role !== 'student') {
       return res.status(404).json({ message: 'Student not found' });
     }
 
-    // Check if the student is assigned to the logged-in teacher
     if (student.studentInfo.teacherId.toString() !== teacherId) {
       return res.status(403).json({ message: 'Student is not assigned to you' });
     }
-
-    // Find the existing progress document for the given student and date
-    const existingProgress = await Progress.findOne({ studentId, teacherId, date });
+    const existingProgress = await Progress.findOne({ student : studentId, teacherId, date });
 
     if (existingProgress) {
-      // Update the sabqi details for the existing document
-      existingProgress.sabqi = {
-        completed,
-        juzz,
-        quality,
-        remarks,
+      existingProgress.sabqi = { 
+        completed: sabqiDetails.completed,
+        juzz: {
+          number: sabqiDetails.juzz.number,
+          name: sabqiDetails.juzzName
+        },
+        quality: sabqiDetails.quality,
+        remarks: sabqiDetails.remarks
       };
       await existingProgress.save();
       res.status(200).json({ message: 'Sabqi progress updated successfully', progress: existingProgress });
     } else {
-      // Create a new progress document for the student and date
       const newProgress = await Progress.create({
         studentId,
         teacherId,
         date,
-        sabaq: null, // Initialize sabaq as null
+        sabaq: null,
         sabqi: {
-          completed,
-          juzz,
-          quality,
-          remarks,
+          completed: sabqiDetails.completed,
+          juzz: {
+            number: sabqiDetails.juzz.number,
+            name: sabqiDetails.juzzName
+          },
+          quality: sabqiDetails.quality,
+          remarks: sabqiDetails.remarks
         },
-        manzil: null, // Initialize manzil as null
+        manzil: null
       });
-
       res.status(201).json({ message: 'Sabqi progress marked successfully', progress: newProgress });
     }
   } catch (error) {
@@ -278,41 +343,107 @@ const markSabqi = async (req, res) => {
   }
 };
 
+
+// const markManzil = async (req, res) => {
+//   const {
+//     studentId,
+//     date,
+//     manzil: { completed, juzz, quality, remarks }, // Accept manzil details from the request body
+//   } = req.body;
+//   const teacherId = req.user.id;
+
+//   try {
+//     // Ensure the student exists and has the role 'student'
+//     const student = await User.findById(studentId);
+//     if (!student || student.role !== 'student') {
+//       return res.status(404).json({ message: 'Student not found' });
+//     }
+
+//     // Check if the student is assigned to the logged-in teacher
+//     if (student.studentInfo.teacherId.toString() !== teacherId) {
+//       return res.status(403).json({ message: 'Student is not assigned to you' });
+//     }
+
+//     // Find the existing progress document for the given student and date
+//     const existingProgress = await Progress.findOne({ studentId, teacherId, date });
+
+//     if (existingProgress) {
+//       // Update the manzil details for the existing document
+//       existingProgress.manzil = {
+//         completed,
+//         juzz,
+//         quality,
+//         remarks,
+//       };
+//       await existingProgress.save();
+//       res.status(200).json({ message: 'Manzil progress updated successfully', progress: existingProgress });
+//     } else {
+//       // Create a new progress document for the student and date
+//       const newProgress = await Progress.create({
+//         studentId,
+//         teacherId,
+//         date,
+//         sabaq: null,
+//         sabqi: null,
+//         manzil: {
+//           completed,
+//           juzz,
+//           quality,
+//           remarks,
+//         },
+//       });
+
+//       res.status(201).json({ message: 'Manzil progress marked successfully', progress: newProgress });
+//     }
+//   } catch (error) {
+//     console.error('Error marking manzil progress:', error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
+
+//re-writing the markManzil function but now with juzzName also present in the request body
+//the db schema has the following structure for manzil:
+/* manzil: {
+    completed : Boolean, 
+    juzz : {
+      number : Number,
+      name : String,
+    },
+    quality: Number,
+    remarks: String,
+  },
+*/
+// Now, re-writing the modified markManzil function
+
 const markManzil = async (req, res) => {
-  const {
-    studentId,
-    date,
-    manzil: { completed, juzz, quality, remarks }, // Accept manzil details from the request body
-  } = req.body;
+  const { student, date, manzil: manzilDetails } = req.body;
   const teacherId = req.user.id;
 
+  //writing a similar code as markSabqi function
   try {
-    // Ensure the student exists and has the role 'student'
     const student = await User.findById(studentId);
     if (!student || student.role !== 'student') {
       return res.status(404).json({ message: 'Student not found' });
     }
 
-    // Check if the student is assigned to the logged-in teacher
     if (student.studentInfo.teacherId.toString() !== teacherId) {
       return res.status(403).json({ message: 'Student is not assigned to you' });
     }
-
-    // Find the existing progress document for the given student and date
-    const existingProgress = await Progress.findOne({ studentId, teacherId, date });
+    const existingProgress = await Progress.findOne({ student : studentId, teacherId, date });
 
     if (existingProgress) {
-      // Update the manzil details for the existing document
-      existingProgress.manzil = {
-        completed,
-        juzz,
-        quality,
-        remarks,
+      existingProgress.manzil = { 
+        completed: manzilDetails.completed,
+        juzz : {
+          number: manzilDetails.juzz.number,
+          name: manzilDetails.juzzName
+        },
+        quality: manzilDetails.quality,
+        remarks: manzilDetails.remarks
       };
       await existingProgress.save();
       res.status(200).json({ message: 'Manzil progress updated successfully', progress: existingProgress });
     } else {
-      // Create a new progress document for the student and date
       const newProgress = await Progress.create({
         studentId,
         teacherId,
@@ -320,20 +451,28 @@ const markManzil = async (req, res) => {
         sabaq: null,
         sabqi: null,
         manzil: {
-          completed,
-          juzz,
-          quality,
-          remarks,
-        },
+          completed: manzilDetails.completed,
+          juzz : {
+            number: manzilDetails.juzz.number,
+            name: manzilDetails.juzzName
+          },
+          quality: manzilDetails.quality,
+          remarks: manzilDetails.remarks
+        }
       });
-
       res.status(201).json({ message: 'Manzil progress marked successfully', progress: newProgress });
     }
-  } catch (error) {
+  } catch (error) 
+  {
     console.error('Error marking manzil progress:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+    
+
+
+
 
 const getMonthlyProgress = async (req, res) => {
   const { month, year } = req.query;

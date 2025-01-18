@@ -108,6 +108,8 @@ const markSabqi = async (studentId, date, sabqiDetails) => {
 
 const markManzil = async (studentId, date, manzilDetails) => {
     try {
+        //logging the manzil details
+        console.log('Marking manzil:', studentId, date, manzilDetails);
         const response = await fetch('http://localhost:5000/teacher/mark-manzil', {
             method: 'POST',
             credentials: 'include',
