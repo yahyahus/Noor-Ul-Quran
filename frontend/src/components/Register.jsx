@@ -1,6 +1,5 @@
-// RegisterPage.jsx
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRole } from '../store/slices/roleSlice';
 import { register } from './services/authService';
@@ -16,9 +15,8 @@ import {
 } from "@/components/ui/select";
 import { BookOpen, UserPlus } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { useState } from 'react'
-import { Link } from 'react-router-dom';
-function RegisterPage() {
+
+const RegisterPage = () => {
   const dispatch = useDispatch();
   const role = useSelector((state) => state.role);
   const [email, setEmail] = useState('');
@@ -48,82 +46,113 @@ function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <div className="flex items-center justify-center space-x-2">
-            <BookOpen className="h-8 w-8 text-teal-600 dark:text-teal-400" />
-            <CardTitle className="text-2xl font-bold text-center">
-              Create an Account
-            </CardTitle>
-          </div>
-          <p className="text-center text-muted-foreground">
-            Enter your information to create your account
+    <div className="min-h-screen flex">
+      {/* Left decorative section */}
+      <div className="hidden lg:flex w-1/2 bg-teal-600 relative overflow-hidden">
+        {/* Decorative background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <svg className="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="circles" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="10" cy="10" r="2" fill="white" />
+              </pattern>
+            </defs>
+            <rect width="100" height="100" fill="url(#circles)" />
+          </svg>
+        </div>
+        
+        {/* Center content */}
+        <div className="relative z-10 flex flex-col items-center justify-center w-full p-12 text-white">
+          <BookOpen className="h-24 w-24 mb-8" />
+          <h1 className="text-4xl font-bold mb-4">Begin Your Journey</h1>
+          <p className="text-xl text-center text-teal-100 max-w-md">
+            Join our community of learners and educators. Start your Quranic education
+            journey with a personalized learning experience.
           </p>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          
+          {/* Decorative shapes */}
+          <div className="absolute top-1/4 right-0 w-48 h-48 bg-teal-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"/>
+        </div>
+      </div>
+
+      {/* Right register section */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1">
+            <div className="flex items-center justify-center space-x-2">
+              <BookOpen className="h-8 w-8 text-teal-600 dark:text-teal-400" />
+              <CardTitle className="text-2xl font-bold text-center">
+                Create an Account
+              </CardTitle>
+            </div>
+            <p className="text-center text-muted-foreground">
+              Enter your information to create your account
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                type="text"
+                placeholder="First Name"
+                value={firstname}
+                onChange={(e) => setFirstname(e.target.value)}
+                className="border-border/40 bg-background/95"
+              />
+              <Input
+                type="text"
+                placeholder="Last Name"
+                value={lastname}
+                onChange={(e) => setLastname(e.target.value)}
+                className="border-border/40 bg-background/95"
+              />
+            </div>
             <Input
-              type="text"
-              placeholder="First Name"
-              value={firstname}
-              onChange={(e) => setFirstname(e.target.value)}
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="border-border/40 bg-background/95"
             />
             <Input
-              type="text"
-              placeholder="Last Name"
-              value={lastname}
-              onChange={(e) => setLastname(e.target.value)}
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="border-border/40 bg-background/95"
             />
-          </div>
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="border-border/40 bg-background/95"
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border-border/40 bg-background/95"
-          />
-          <Select
-            value={role}
-            onValueChange={(value) => dispatch(setRole(value))}
-          >
-            <SelectTrigger className="border-border/40 bg-background/95">
-              <SelectValue placeholder="Select role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="student">Student</SelectItem>
-              <SelectItem value="teacher">Teacher</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button
-            className="w-full bg-teal-600 hover:bg-teal-700 text-white"
-            onClick={handleRegister}
-          >
-            <UserPlus className="mr-2 h-4 w-4" /> Create Account
-          </Button>
-          <div className="text-center text-sm text-muted-foreground">
-            Already have an account?{' '}
-            <Link 
-              to="/login" 
-              className="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 font-medium"
+            <Select
+              value={role}
+              onValueChange={(value) => dispatch(setRole(value))}
             >
-              Sign In
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+              <SelectTrigger className="border-border/40 bg-background/95">
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="student">Student</SelectItem>
+                <SelectItem value="teacher">Teacher</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button
+              className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+              onClick={handleRegister}
+            >
+              <UserPlus className="mr-2 h-4 w-4" /> Create Account
+            </Button>
+            <div className="text-center text-sm text-muted-foreground">
+              Already have an account?{' '}
+              <Link 
+                to="/login" 
+                className="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 font-medium"
+              >
+                Sign In
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
-}
+};
 
 export default RegisterPage;
