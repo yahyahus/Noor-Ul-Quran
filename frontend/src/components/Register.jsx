@@ -23,12 +23,14 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
+  const [response, setResponse] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleRegister = async () => {
     try {
       const result = await register(email, password, firstname, lastname, navigate);
+      setResponse(result.message);
       if (!result.success) {
         toast({
           variant: "destructive",
@@ -37,6 +39,7 @@ const RegisterPage = () => {
         });
       }
     } catch (error) {
+      setResponse("An unexpected error occurred. Please try again.");
       toast({
         variant: "destructive",
         title: "Error",
@@ -49,7 +52,6 @@ const RegisterPage = () => {
     <div className="min-h-screen flex">
       {/* Left decorative section */}
       <div className="hidden lg:flex w-1/2 bg-teal-600 relative overflow-hidden">
-        {/* Decorative background pattern */}
         <div className="absolute inset-0 opacity-10">
           <svg className="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -61,7 +63,6 @@ const RegisterPage = () => {
           </svg>
         </div>
         
-        {/* Center content */}
         <div className="relative z-10 flex flex-col items-center justify-center w-full p-12 text-white">
           <BookOpen className="h-24 w-24 mb-8" />
           <h1 className="text-4xl font-bold mb-4">Begin Your Journey</h1>
@@ -70,8 +71,8 @@ const RegisterPage = () => {
             journey with a personalized learning experience.
           </p>
           
-          {/* Decorative shapes */}
-          <div className="absolute top-1/4 right-0 w-48 h-48 bg-teal-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"/>
+          <div className="absolute top-1/4 right-0 w-72 h-72 bg-teal-500 rounded-full mix-blend-multiply filter blur-xl opacity-45 animate-blob"/>
+          <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-teal-600 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-blob animation-delay-4000"/>
         </div>
       </div>
 
@@ -133,6 +134,9 @@ const RegisterPage = () => {
                 <SelectItem value="admin">Admin</SelectItem>
               </SelectContent>
             </Select>
+            {response && (
+              <p className="text-center text-red-500 text-sm">{response}</p>
+            )}
             <Button
               className="w-full bg-teal-600 hover:bg-teal-700 text-white"
               onClick={handleRegister}

@@ -10,12 +10,15 @@ import { useToast } from "@/hooks/use-toast";
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [response, setResponse] = useState('');
+  const [readOnly, setReadOnly] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleLogin = async () => {
     try {
       const result = await login(email, password, navigate);
+      setResponse(result.message);
       if (!result.success) {
         toast({
           variant: "destructive",
@@ -24,6 +27,7 @@ const LoginPage = () => {
         });
       }
     } catch (error) {
+      setResponse("An unexpected error occurred. Please try again.");
       toast({
         variant: "destructive",
         title: "Error",
@@ -36,7 +40,6 @@ const LoginPage = () => {
     <div className="min-h-screen flex">
       {/* Left decorative section */}
       <div className="hidden lg:flex w-1/2 bg-teal-600 relative overflow-hidden">
-        {/* Decorative background pattern */}
         <div className="absolute inset-0 opacity-10">
           <svg className="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -48,7 +51,6 @@ const LoginPage = () => {
           </svg>
         </div>
         
-        {/* Center content */}
         <div className="relative z-10 flex flex-col items-center justify-center w-full p-12 text-white">
           <BookOpen className="h-24 w-24 mb-8" />
           <h1 className="text-4xl font-bold mb-4">Welcome Back</h1>
@@ -56,9 +58,8 @@ const LoginPage = () => {
             Your journey in Quranic learning continues here.
           </p>
           
-          {/* Decorative circles */}
-          <div className="absolute top-0 right-0 w-48 h-48 bg-teal-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"/>
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-teal-700 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"/>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-blob"/>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-700 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-blob animation-delay-2000"/>
         </div>
       </div>
 
@@ -82,6 +83,9 @@ const LoginPage = () => {
                 type="email"
                 placeholder="Email"
                 value={email}
+                readOnly={readOnly}
+                onFocus={() => setReadOnly(false)}
+                onBlur={() => setReadOnly(true)}
                 onChange={(e) => setEmail(e.target.value)}
                 className="border-border/40 bg-background/95"
               />
@@ -91,10 +95,16 @@ const LoginPage = () => {
                 type="password"
                 placeholder="Password"
                 value={password}
+                readOnly={readOnly}
+                onFocus={() => setReadOnly(false)}
+                onBlur={() => setReadOnly(true)}
                 onChange={(e) => setPassword(e.target.value)}
                 className="border-border/40 bg-background/95"
               />
             </div>
+            {response && (
+              <p className="text-center text-red-500 text-sm">{response}</p>
+            )}
             <Button
               className="w-full bg-teal-600 hover:bg-teal-700 text-white"
               onClick={handleLogin}
