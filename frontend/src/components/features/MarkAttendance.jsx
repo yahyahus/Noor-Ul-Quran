@@ -3,8 +3,37 @@ import { getAttendance, markAttendance } from '../services/teacherService';
 import { getWorkingDays } from '../services/generalService';
 import Header from '../Header';
 import Navbar from '../Navbar';
-import { Calendar, ChevronLeft, ChevronRight, Users, Clock } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { 
+    Calendar, 
+    ChevronLeft, 
+    ChevronRight, 
+    Users, 
+    Clock,
+    LoaderCircle 
+} from 'lucide-react';
+import { 
+    Card, 
+    CardHeader, 
+    CardTitle, 
+    CardContent 
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 const MarkAttendance = () => {
     const [month, setMonth] = useState(new Date().getMonth() + 1);
@@ -17,7 +46,6 @@ const MarkAttendance = () => {
     const [workingDays, setWorkingDays] = useState([]);
     const currentDate = new Date();
 
-    // Keep your existing fetch functions
     const fetchAttendance = async () => {
         setLoading(true);
         try {
@@ -44,7 +72,6 @@ const MarkAttendance = () => {
         fetchWorkingDays();
     }, [month, year]);
 
-    // Keep your existing handlers
     const handleMarkAttendance = async (studentId, date, status) => {
         setMarkingLoading(true);
         try {
@@ -54,7 +81,9 @@ const MarkAttendance = () => {
                     student.id === studentId
                         ? {
                             ...student,
-                            attendance: student.attendance.some(att => new Date(att.date).toDateString() === new Date(date).toDateString())
+                            attendance: student.attendance.some(att => 
+                                new Date(att.date).toDateString() === new Date(date).toDateString()
+                            )
                                 ? student.attendance.map(att =>
                                     att.date === date ? { ...att, status } : att
                                 )
@@ -90,147 +119,168 @@ const MarkAttendance = () => {
         return attendanceDate > currentDate;
     };
 
-    const getStatusColor = (status) => {
-        switch(status) {
+    const getStatusBadgeStyles = (status) => {
+        const baseStyles = "inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium transition-all";
+        switch(status?.toLowerCase()) {
             case 'present':
-                return 'bg-teal-100 text-teal-700 ring-2 ring-teal-500/20';
+                return cn(baseStyles, "bg-teal-100 text-teal-600 dark:bg-teal-900/50 dark:text-teal-400");
             case 'absent':
-                return 'bg-red-100 text-red-700 ring-2 ring-red-500/20';
+                return cn(baseStyles, "bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400");
             case 'leave':
-                return 'bg-yellow-100 text-yellow-700 ring-2 ring-yellow-500/20';
+                return cn(baseStyles, "bg-yellow-100 text-yellow-600 dark:bg-yellow-900/50 dark:text-yellow-400");
             default:
-                return 'bg-gray-100 text-gray-700 ring-2 ring-gray-500/20';
+                return cn(baseStyles, "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400");
         }
     };
 
     return (
-        <div className="flex flex-col">
+        <div className="min-h-screen bg-background">
             <Header />
-            <div className="flex flex-1">
+            <div className="flex">
                 <Navbar />
-                <main className="flex-1 p-8">
-                    <Card className="w-full bg-gradient-to-br from-teal-50 to-white">
-                        <CardHeader className="border-b border-teal-100">
+                <main className="flex-1 container mx-auto p-6">
+                    <Card className="border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                        <CardHeader className="space-y-1 border-b">
                             <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <Clock className="h-6 w-6 text-teal-500" />
-                                    <CardTitle className="text-teal-900">Attendance Tracker</CardTitle>
+                                <div className="flex items-center space-x-2">
+                                    <Clock className="h-6 w-6 text-teal-600 dark:text-teal-400" />
+                                    <CardTitle className="text-2xl font-bold">Attendance Tracker</CardTitle>
                                 </div>
                                 <div className="flex items-center space-x-4">
-                                    <button
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
                                         onClick={() => changeMonth(-1)}
-                                        className="flex items-center gap-2 rounded-full bg-teal-500 px-4 py-2 text-white hover:bg-teal-600 transition-colors"
+                                        className="hover:bg-teal-100 hover:text-teal-900 dark:hover:bg-teal-900 dark:hover:text-teal-50"
                                     >
                                         <ChevronLeft className="h-4 w-4" />
-                                        Previous
-                                    </button>
-                                    <span className="text-lg font-medium text-teal-900">
-                                        {new Date(year, month - 1).toLocaleString('en-US', { month: 'long', year: 'numeric' })}
+                                    </Button>
+                                    <span className="text-lg font-medium min-w-[200px] text-center">
+                                        {new Date(year, month - 1).toLocaleString('en-US', { 
+                                            month: 'long',
+                                            year: 'numeric'
+                                        })}
                                     </span>
-                                    <button
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
                                         onClick={() => changeMonth(1)}
-                                        className="flex items-center gap-2 rounded-full bg-teal-500 px-4 py-2 text-white hover:bg-teal-600 transition-colors"
+                                        className="hover:bg-teal-100 hover:text-teal-900 dark:hover:bg-teal-900 dark:hover:text-teal-50"
                                     >
-                                        Next
                                         <ChevronRight className="h-4 w-4" />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </CardHeader>
                         <CardContent className="p-6">
                             {loading ? (
-                                <div className="flex items-center justify-center p-8">
-                                    <p className="text-teal-600 font-medium">Loading attendance data...</p>
+                                <div className="flex justify-center items-center h-64">
+                                    <LoaderCircle className="h-8 w-8 animate-spin text-teal-600 dark:text-teal-400" />
+                                </div>
+                            ) : attendanceData.length === 0 ? (
+                                <div className="text-center py-8 text-muted-foreground">
+                                    No students found for attendance marking.
                                 </div>
                             ) : (
-                                <div className="overflow-x-auto rounded-lg border border-teal-100 bg-white shadow-sm">
-                                    {attendanceData.length === 0 ? (
-                                        <p className="p-8 text-center text-gray-500">No attendance data found.</p>
-                                    ) : (
-                                        <table className="w-full border-collapse text-sm">
-                                            <thead>
-                                                <tr className="bg-teal-500 text-white">
-                                                    <th className="w-48 px-4 py-3 text-left font-medium">
-                                                        <div className="flex items-center gap-2">
-                                                            <Users className="h-5 w-5" />
-                                                            <span>Student Name</span>
+                                <div className="rounded-md border">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="w-[200px]">
+                                                    <div className="flex items-center space-x-2">
+                                                        <Users className="h-4 w-4" />
+                                                        <span>Student Name</span>
+                                                    </div>
+                                                </TableHead>
+                                                {workingDays.map((date) => (
+                                                    <TableHead key={date} className="text-center">
+                                                        <div className="flex flex-col items-center justify-center space-y-1">
+                                                            <Calendar className="h-4 w-4" />
+                                                            <span>
+                                                                {new Date(date).toLocaleString('en-US', {
+                                                                    day: 'numeric',
+                                                                    month: 'short'
+                                                                })}
+                                                            </span>
                                                         </div>
-                                                    </th>
-                                                    {workingDays.map((date) => (
-                                                        <th key={date} className="px-4 py-3 text-center font-medium">
-                                                            <div className="flex items-center justify-center gap-2">
-                                                                <Calendar className="h-4 w-4" />
-                                                                <span>
-                                                                    {new Date(date).toLocaleString('en-US', { 
-                                                                        day: 'numeric',
-                                                                        month: 'short'
-                                                                    })}
-                                                                </span>
-                                                            </div>
-                                                        </th>
-                                                    ))}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {attendanceData.map((student, idx) => (
-                                                    <tr 
-                                                        key={student.id}
-                                                        className={`border-b border-teal-100 transition-colors hover:bg-teal-50
-                                                            ${idx % 2 === 0 ? 'bg-white' : 'bg-teal-50/50'}`}
-                                                    >
-                                                        <td className="px-4 py-3 font-medium text-teal-900">
-                                                            {student.name}
-                                                        </td>
-                                                        {workingDays.map((date) => {
-                                                            const attendance = student.attendance.find(
-                                                                (att) => new Date(att.date).toDateString() === new Date(date).toDateString()
-                                                            );
-                                                            return (
-                                                                <td key={date} className="px-4 py-3 text-center">
-                                                                    {editingCell.studentId === student.id && 
-                                                                     editingCell.date === date ? (
-                                                                        <select
-                                                                            value={attendance ? attendance.status : ''}
-                                                                            onChange={(e) => handleMarkAttendance(student.id, date, e.target.value)}
-                                                                            className="block w-full rounded-md border border-teal-200 bg-white p-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
-                                                                            onBlur={() => setEditingCell({ studentId: null, date: null })}
-                                                                        >
-                                                                            <option value="" disabled>Select Status</option>
-                                                                            {attendanceOptions.map((option) => (
-                                                                                <option key={option} value={option}>
-                                                                                    {option}
-                                                                                </option>
-                                                                            ))}
-                                                                        </select>
-                                                                    ) : (
-                                                                        <span
-                                                                            className={`inline-flex cursor-pointer items-center justify-center rounded-full px-3 py-1 text-xs font-medium transition-all hover:scale-105 ${
-                                                                                isFutureDate(date) 
-                                                                                    ? 'cursor-no-drop bg-gray-100 text-gray-400' 
-                                                                                    : getStatusColor(attendance?.status)
-                                                                            }`}
-                                                                            onClick={() => {
-                                                                                if (!isFutureDate(date)) {
-                                                                                    setEditingCell({ studentId: student.id, date });
-                                                                                }
-                                                                            }}
-                                                                        >
-                                                                            {attendance ? attendance.status : 'Not Marked'}
-                                                                        </span>
-                                                                    )}
-                                                                </td>
-                                                            );
-                                                        })}
-                                                    </tr>
+                                                    </TableHead>
                                                 ))}
-                                            </tbody>
-                                        </table>
-                                    )}
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {attendanceData.map((student) => (
+                                                <TableRow key={student.id}>
+                                                    <TableCell className="font-medium">
+                                                        {student.name}
+                                                    </TableCell>
+                                                    {workingDays.map((date) => {
+                                                        const attendance = student.attendance.find(
+                                                            (att) => new Date(att.date).toDateString() === new Date(date).toDateString()
+                                                        );
+                                                        const isEditing = editingCell.studentId === student.id && 
+                                                                        editingCell.date === date;
+                                                        const isFuture = isFutureDate(date);
+
+                                                        return (
+                                                            <TableCell key={date} className="text-center">
+                                                                {isEditing ? (
+                                                                    <Select
+                                                                        value={attendance?.status || ""}
+                                                                        onValueChange={(value) => handleMarkAttendance(student.id, date, value)}
+                                                                    >
+                                                                        <SelectTrigger className="w-32 mx-auto">
+                                                                            <SelectValue placeholder="Select status" />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            {attendanceOptions.map((option) => (
+                                                                                <SelectItem 
+                                                                                    key={option} 
+                                                                                    value={option}
+                                                                                >
+                                                                                    {option.charAt(0).toUpperCase() + option.slice(1)}
+                                                                                </SelectItem>
+                                                                            ))}
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                ) : (
+                                                                    <button
+                                                                        className={cn(
+                                                                            getStatusBadgeStyles(attendance?.status),
+                                                                            "hover:scale-105",
+                                                                            {
+                                                                                "cursor-not-allowed opacity-50": isFuture,
+                                                                                "cursor-pointer": !isFuture
+                                                                            }
+                                                                        )}
+                                                                        onClick={() => {
+                                                                            if (!isFuture) {
+                                                                                setEditingCell({ studentId: student.id, date });
+                                                                            }
+                                                                        }}
+                                                                        disabled={isFuture}
+                                                                    >
+                                                                        {attendance?.status 
+                                                                            ? attendance.status.charAt(0).toUpperCase() + 
+                                                                              attendance.status.slice(1)
+                                                                            : 'Not Marked'
+                                                                        }
+                                                                    </button>
+                                                                )}
+                                                            </TableCell>
+                                                        );
+                                                    })}
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
                                 </div>
                             )}
                             {markingLoading && (
-                                <div className="mt-4 text-center">
-                                    <p className="text-teal-600 font-medium">Marking attendance, please wait...</p>
+                                <div className="flex items-center justify-center space-x-2 mt-4">
+                                    <LoaderCircle className="h-4 w-4 animate-spin text-teal-600 dark:text-teal-400" />
+                                    <span className="text-muted-foreground">
+                                        Updating attendance...
+                                    </span>
                                 </div>
                             )}
                         </CardContent>

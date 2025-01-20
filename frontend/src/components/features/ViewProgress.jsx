@@ -5,13 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay } from "date-fns";
-import {getProgress} from "../services/studentservice";
+import { format, startOfWeek, endOfWeek, eachDayOfInterval } from "date-fns";
+import { getProgress } from "../services/studentservice";
 import Header from "../Header";
 import Navbar from "../Navbar";
 
 const StatusBadge = ({ completed }) => (
-  <Badge
+  <Badge 
     variant="outline" 
     className={`text-xs ${
       completed 
@@ -24,7 +24,7 @@ const StatusBadge = ({ completed }) => (
 );
 
 const DetailBox = ({ title, value, icon: Icon }) => (
-  <div className="flex items-center gap-2 text-gray-600">
+  <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
     <Icon className="h-4 w-4" />
     <span className="text-sm font-medium">{title}:</span>
     <span className="text-sm">{value}</span>
@@ -44,22 +44,34 @@ const ProgressSection = ({ title, icon: Icon, data, isExpanded }) => {
         <StatusBadge completed={data.completed} />
       </div>
       
-      <div className="text-sm text-gray-600 mb-2">
+      {/* Essential info shown always */}
+      <div className="text-sm text-gray-600 dark:text-gray-300 mb-2">
         {title === "Sabaq" && (
           <span className="font-medium">{data.numberOfLines || 0} lines</span>
         )}
         {(title === "Sabqi" || title === "Manzil") && (
-          <span className="font-medium">Quality: {data.quality || 0}/5</span>
+          <div className="flex flex-col gap-1">
+            <span className="font-medium">Juzz: {data.juzz?.name || 'Not specified'}</span>
+            <span className="font-medium">Quality: {data.quality || 0}/5</span>
+          </div>
         )}
       </div>
 
-      {isExpanded && (
-        <div className="space-y-4 mt-4">
+      {/* Expanded content */}
+      <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
+        isExpanded ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
+      }`}>
+        <div className="space-y-4">
           {title === "Sabaq" && (
             <>
               <DetailBox 
-                title="Range" 
-                value={data.remarks || 'No remarks'}
+                title="Starting" 
+                value={`${data.startingSurah?.name || 'Not specified'} (${data.startingAyah || 'N/A'})`}
+                icon={ArrowRight} 
+              />
+              <DetailBox 
+                title="Ending" 
+                value={`${data.endingSurah?.name || 'Not specified'} (${data.endingAyah || 'N/A'})`}
                 icon={ArrowRight} 
               />
             </>
@@ -67,13 +79,20 @@ const ProgressSection = ({ title, icon: Icon, data, isExpanded }) => {
 
           {(title === "Sabqi" || title === "Manzil") && (
             <DetailBox 
-              title="Status" 
-              value={data.remarks || 'No remarks'}
+              title="Juzz Details" 
+              value={`${data.juzz?.number || 'N/A'} - ${data.juzz?.name || 'Not specified'}`}
               icon={ArrowRight}
             />
           )}
+
+          <div className="mt-4">
+            <p className="text-sm text-gray-600 dark:text-gray-300 font-medium mb-1">Remarks</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {data.remarks || 'No remarks provided'}
+            </p>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -103,10 +122,17 @@ const DailyCard = ({ date, progressData }) => {
     }`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg text-gray-700 dark:text-gray-200 flex items-center gap-2">
-            <CalendarIcon className="h-5 w-5 text-teal-600" />
-            {format(date, 'EEEE, MMM d')}
-          </CardTitle>
+          <div className="flex flex-col">
+            <CardTitle className="text-lg text-gray-700 dark:text-gray-200 flex items-center gap-2">
+              <CalendarIcon className="h-5 w-5 text-teal-600" />
+              {format(date, 'EEEE, MMM d')}
+            </CardTitle>
+            {progressData.studentName && (
+              <span className="text-sm text-gray-500 mt-1">
+                Student: {progressData.studentName}
+              </span>
+            )}
+          </div>
           <Button
             variant="ghost"
             size="sm"
@@ -122,7 +148,7 @@ const DailyCard = ({ date, progressData }) => {
       <CardContent className="pt-0">
         <div className={`grid ${
           isExpanded 
-            ? 'grid-cols-3 gap-4' 
+            ? 'grid-cols-1 md:grid-cols-3 gap-4' 
             : 'grid-cols-1 gap-4'
         }`}>
           <ProgressSection
@@ -169,13 +195,7 @@ const ViewProgress = () => {
           try {
             const response = await getProgress(formattedDate);
             if (response.message === "Progress retrieved successfully.") {
-              newWeekData[formattedDate] = {
-                sabaq: response.sabaq,
-                sabqi: response.sabqi,
-                manzil: response.manzil,
-                studentName: response.studentName,
-                teacherName: response.teacherName
-              };
+              newWeekData[formattedDate] = response;
             }
           } catch (error) {
             console.error(`Error fetching data for ${formattedDate}:`, error);

@@ -3,6 +3,18 @@ import { fetchAttendance } from '../services/studentservice';
 import { getWorkingDays } from '../services/generalService';
 import Header from '../Header';
 import Navbar from '../Navbar';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Calendar, ChevronLeft, ChevronRight, LoaderCircle } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 const ViewAttendance = () => {
     const [month, setMonth] = useState(new Date().getMonth() + 1);
@@ -11,7 +23,6 @@ const ViewAttendance = () => {
     const [workingDays, setWorkingDays] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // Fetch attendance and working days when month or year changes
     useEffect(() => {
         const fetchAttendanceAndDays = async () => {
             setLoading(true);
@@ -19,13 +30,11 @@ const ViewAttendance = () => {
                 const attendanceData = await fetchAttendance(month, year);
                 const workingDaysData = await getWorkingDays(month, year);
 
-                // Map attendance data by date for quick lookup
                 const attendanceMap = {};
                 attendanceData.forEach(record => {
                     attendanceMap[new Date(record.date).toDateString()] = record.status;
                 });
 
-                // Format working days with attendance status or "Not Marked"
                 const formattedWorkingDays = workingDaysData.map(date => {
                     const dateStr = new Date(date).toDateString();
                     return { date, status: attendanceMap[dateStr] || 'Not Marked' };
@@ -57,70 +66,104 @@ const ViewAttendance = () => {
         });
     };
 
+    const getStatusColor = (status) => {
+        switch (status.toLowerCase()) {
+            case 'present':
+                return 'text-teal-600 dark:text-teal-400';
+            case 'absent':
+                return 'text-red-600 dark:text-red-400';
+            case 'leave':
+                return 'text-yellow-600 dark:text-yellow-400';
+            default:
+                return 'text-muted-foreground';
+        }
+    };
+
     return (
-        <div className="flex flex-col">
+        <div className="min-h-screen bg-background">
             <Header />
-            <div className="flex flex-1">
+            <div className="flex">
                 <Navbar />
-                <main className="flex-1 p-8">
-                    <h1 className="text-3xl font-semibold mb-4 text-gray-800">Attendance Record</h1>
-
-                    <div className="flex items-center space-x-4 mb-6">
-                        <button
-                            onClick={() => changeMonth(-1)}
-                            className="px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700"
-                        >
-                            Previous
-                        </button>
-                        <span className="text-lg font-medium">
-                            {new Date(year, month - 1).toLocaleString('en-US', { month: 'long', year: 'numeric' })}
-                        </span>
-                        <button
-                            onClick={() => changeMonth(1)}
-                            className="px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700"
-                        >
-                            Next
-                        </button>
-                    </div>
-
-                    {loading ? (
-                        <p className="text-xl font-semibold text-red-500">Loading attendance data...</p>
-                    ) : (
-                        <div className="overflow-x-auto">
-                            {attendance.length === 0 ? (
-                                <p className="text-gray-500">No attendance data found.</p>
+                <main className="flex-1 container mx-auto p-6">
+                    <Card className="border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                        <CardHeader className="space-y-1">
+                            <div className="flex items-center justify-between">
+                                <CardTitle className="text-2xl font-bold">
+                                    <div className="flex items-center space-x-2">
+                                        <Calendar className="h-6 w-6 text-teal-600 dark:text-teal-400" />
+                                        <h2 className="text-2xl font-semibold text-teal-700 dark:text-teal-500">
+Attendance Record              </h2>
+              
+                                    </div>
+                                </CardTitle>
+                                <div className="flex items-center space-x-4">
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        onClick={() => changeMonth(-1)}
+                                        className="hover:bg-teal-100 hover:text-teal-900 dark:hover:bg-teal-900 dark:hover:text-teal-50"
+                                    >
+                                        <ChevronLeft className="h-4 w-4" />
+                                    </Button>
+                                    <span className="text-lg font-medium min-w-[200px] text-center">
+                                        {new Date(year, month - 1).toLocaleString('en-US', { 
+                                            month: 'long',
+                                            year: 'numeric'
+                                        })}
+                                    </span>
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        onClick={() => changeMonth(1)}
+                                        className="hover:bg-teal-100 hover:text-teal-900 dark:hover:bg-teal-900 dark:hover:text-teal-50"
+                                    >
+                                        <ChevronRight className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            {loading ? (
+                                <div className="flex justify-center items-center h-64">
+                                    <LoaderCircle className="h-8 w-8 animate-spin text-teal-600 dark:text-teal-400" />
+                                </div>
+                            ) : attendance.length === 0 ? (
+                                <div className="text-center py-8 text-muted-foreground">
+                                    No attendance data found for this period.
+                                </div>
                             ) : (
-                                <table className="min-w-full bg-white border border-gray-200">
-                                    <thead className="bg-gray-100">
-                                        <tr>
-                                            <th className="py-2 px-4 border-b">Date</th>
-                                            <th className="py-2 px-4 border-b">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {attendance.map((record, index) => (
-                                            <tr key={index}>
-                                                <td className="py-2 px-4 border-b">
-                                                    {new Date(record.date).toLocaleDateString('en-US', {
-                                                        day: 'numeric', month: 'short'
-                                                    })}
-                                                </td>
-                                                <td
-                                                    className={`py-2 px-4 border-b ${
-                                                        record.status === 'present' ? 'text-green-500' :
-                                                        record.status === 'absent' ? 'text-red-500' :
-                                                        record.status === 'leave' ? 'text-yellow-500' : 'text-gray-500'
-                                                    }`}
-                                                >
-                                                    {record.status}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                <div className="rounded-md border">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="w-[200px]">Date</TableHead>
+                                                <TableHead>Status</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {attendance.map((record, index) => (
+                                                <TableRow key={index}>
+                                                    <TableCell className="font-medium">
+                                                        {new Date(record.date).toLocaleDateString('en-US', {
+                                                            weekday: 'short',
+                                                            day: 'numeric',
+                                                            month: 'short'
+                                                        })}
+                                                    </TableCell>
+                                                    <TableCell className={cn(
+                                                        "font-medium",
+                                                        getStatusColor(record.status)
+                                                    )}>
+                                                        {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
                             )}
-                        </div>
-                    )}
+                        </CardContent>
+                    </Card>
                 </main>
             </div>
         </div>
