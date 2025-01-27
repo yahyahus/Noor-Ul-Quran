@@ -1,105 +1,194 @@
-const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-const secret = process.env.JWT_SECRET || 'mysecret';
-
-const generateToken = (user) => {
-
-  return jwt.sign({ id: user._id, role: user.role}, secret, {
-    expiresIn: 150, 
-  });
+// Constants
+const STATUS = {
+  SUCCESS: 'success',
+  ERROR: 'error'
 };
 
+const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  INTERNAL_SERVER_ERROR: 500
+};
+
+// Response formatter
+const formatResponse = (status, message, data = null) => {
+  const response = {
+    status,
+    message,
+    timestamp: new Date().toISOString()
+  };
+  
+  if (data) {
+    response.data = data;
+  }
+  
+  return response;
+};
+
+const generateToken = (user) => {
+  const payload = {
+    id: user._id,
+    role: user.role,
+    username: user.username // Adding username can be useful for frontend
+  };
+  
+  return jwt.sign(
+    payload,
+    process.env.JWT_SECRET || 'mysecret',
+    { expiresIn: '7d' } // More readable than seconds
+  );
+};
+
+const setCookie = (res, token) => {
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    sameSite: 'none'
+  });
+};
 
 const login = async (req, res) => {
   const { username, password } = req.body;
-  console.log('Request Body:', req.body);
-
+  
   try {
-    // Find user by username only
     const user = await User.findOne({ username });
+    
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(HTTP_STATUS.UNAUTHORIZED)
+        .json(formatResponse(STATUS.ERROR, 'Invalid username or password'));
     }
-
-    // Compare the entered password with the hashed password in the database
+    
     const isPasswordValid = await bcrypt.compare(password, user.password);
+    
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(HTTP_STATUS.UNAUTHORIZED)
+        .json(formatResponse(STATUS.ERROR, 'Invalid username or password'));
     }
-
-    // Generate JWT token if login is successful
+    
     const token = generateToken(user);
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      sameSite: 'none',
-    });
-
-    return res.status(200).json({ message: 'Login successful', token, role: user.role });
+    setCookie(res, token);
+    
+    const userData = {
+      id: user._id,
+      username: user.username,
+      role: user.role,
+      firstname: user.firstname,
+      lastname: user.lastname
+    };
+    
+    return res.status(HTTP_STATUS.OK)
+      .json(formatResponse(STATUS.SUCCESS, 'Login successful', { user: userData, token }));
+      
   } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Login error:', error);
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+      .json(formatResponse(STATUS.ERROR, 'An error occurred during login'));
   }
 };
-  
 
 const register = async (req, res) => {
   const { username, password, firstname, lastname, role } = req.body;
-  console.log('Request Body:', req.body);
-
-  const existingUser = await User.findOne({ username });
-  if (!existingUser) {
-    try {
-      const user = await User.create({ username, password, firstname, lastname, role });
-      console.log(role);
-
-      const token = generateToken(user);
-      res.cookie('token', token, { httpOnly: true, secure: true });
-      return res.status(200).json({ message: 'User Created', user, token, role: user.role });
-    }catch (err) {
-      console.error('Error during user creation:', err); // Log the full error
-      res.status(400).json({ message: 'User Creation failed', error: err.message });
+  
+  try {
+    const existingUser = await User.findOne({ username });
+    
+    if (existingUser) {
+      return res.status(HTTP_STATUS.CONFLICT)
+        .json(formatResponse(STATUS.ERROR, 'Username is already taken'));
     }
-
-  } else {
-    res.status(400).json({ message: 'Username already exists' });
+    
+    const user = await User.create({
+      username,
+      password,
+      firstname,
+      lastname,
+      role: role || 'user' // Default role if not specified
+    });
+    
+    const token = generateToken(user);
+    setCookie(res, token);
+    
+    const userData = {
+      id: user._id,
+      username: user.username,
+      role: user.role,
+      firstname: user.firstname,
+      lastname: user.lastname
+    };
+    
+    return res.status(HTTP_STATUS.CREATED)
+      .json(formatResponse(STATUS.SUCCESS, 'Registration successful', { user: userData, token }));
+      
+  } catch (error) {
+    console.error('Registration error:', error);
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+      .json(formatResponse(STATUS.ERROR, 'An error occurred during registration'));
   }
 };
 
-
-  
-  const logout = (req, res) => {
-    if(req.cookies.token) {
-     
-    res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'none' });
-    return res.status(200).json({ message: 'Logout successful' },);
-    } else if (!req.cookies.token) {
-      return res.status(204).json({ message: 'Already logged out' });
-    }
-    else {
-      return res.status(400).json({ message: 'Logout failed' });
-    }
-  };
-
-  const isloggedin = (req, res) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(406).json({ message: 'Unauthorized' });
+const logout = (req, res) => {
+  if (!req.cookies.token) {
+    return res.status(HTTP_STATUS.OK)
+      .json(formatResponse(STATUS.SUCCESS, 'Already logged out'));
   }
-  jwt.verify(token, secret, (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: 'Forbidden' });
-    }
-    req.user = user;
-    return res.status(200).json({ message: 'Welcome to the portal', role: user.role });
-  });
-}
-
-
-
-
-  module.exports = { login, register,isloggedin, logout };
   
+  try {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none'
+    });
+    
+    return res.status(HTTP_STATUS.OK)
+      .json(formatResponse(STATUS.SUCCESS, 'Logout successful'));
+      
+  } catch (error) {
+    console.error('Logout error:', error);
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+      .json(formatResponse(STATUS.ERROR, 'An error occurred during logout'));
+  }
+};
+
+const isLoggedIn = (req, res) => {
+  const token = req.cookies.token;
+  
+  if (!token) {
+    return res.status(HTTP_STATUS.UNAUTHORIZED)
+      .json(formatResponse(STATUS.ERROR, 'Authentication required'));
+  }
+  
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'mysecret');
+    
+    return res.status(HTTP_STATUS.OK)
+      .json(formatResponse(STATUS.SUCCESS, 'User is authenticated', {
+        user: {
+          id: decoded.id,
+          role: decoded.role,
+          username: decoded.username
+        }
+      }));
+      
+  } catch (error) {
+    console.error('Token verification error:', error);
+    return res.status(HTTP_STATUS.FORBIDDEN)
+      .json(formatResponse(STATUS.ERROR, 'Invalid or expired token'));
+  }
+};
+
+module.exports = {
+  login,
+  register,
+  logout,
+  isLoggedIn
+};

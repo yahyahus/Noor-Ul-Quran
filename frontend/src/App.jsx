@@ -16,7 +16,8 @@ import TeacherDashboard from './components/features/TeacherDashboard';
 import { setAuthenticated } from '../src/store/slices/authSlice.js';
 import ViewProgress from './components/features/ViewProgress.jsx';
 import { checkAuth } from './hooks/useAuth';
-import ProtectedRoute from './components/ProtectedRoute'; function App() {
+import ProtectedRoute from './components/ProtectedRoute'; 
+function App() {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const role = useSelector((state) => state.role);
