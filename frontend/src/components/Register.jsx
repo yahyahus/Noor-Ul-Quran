@@ -1,3 +1,4 @@
+// RegisterPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,6 +32,7 @@ const RegisterPage = () => {
     try {
       const result = await register(email, password, firstname, lastname, navigate);
       setResponse(result.message);
+      
       if (!result.success) {
         toast({
           variant: "destructive",

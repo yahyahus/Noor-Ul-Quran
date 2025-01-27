@@ -29,7 +29,7 @@ export const login = async (email, password, navigate) => {
 
 export const register = async (email, password, firstname, lastname, navigate) => {
   try {
-    const role = store.getState().role; // Get the role from the Redux store
+    const role = store.getState().role;
 
     const response = await fetch('http://localhost:5000/register', {
       method: 'POST',
@@ -38,14 +38,18 @@ export const register = async (email, password, firstname, lastname, navigate) =
       credentials: 'include',
     });
     const data = await response.json();
+    
     if (response.ok) {
       store.dispatch(setAuthenticated(true));
       navigate('/portal');
       return { success: true };
     }
-    if (response.status === 400) {
-      return { success: false, message: data.message };
-    }
+    
+    // Return the detailed error message if available
+    return { 
+      success: false, 
+      message: data.details || data.errors?.[0]?.message || data.message
+    };
   } catch (error) {
     console.error('Error:', error);
     return { success: false, message: 'An error occurred' };
