@@ -1,7 +1,6 @@
 // useAuth.js
 import { setAuthenticated } from '../store/slices/authSlice.js';
 import { setRole } from '../store/slices/roleSlice.js';
-import store from '../store/store.js';
 
 export const checkAuth = async (dispatch) => {
   try {
@@ -14,7 +13,7 @@ export const checkAuth = async (dispatch) => {
       const data = await response.json();  // Parse the JSON body
       //how to log the msg
       dispatch(setAuthenticated(true));
-      dispatch(setRole(data.role));  // Set the role in the store
+      dispatch(setRole(data.data.user.role));  // Set the role in the store
     } else if (response.status === 403 || response.status === 401) {
       dispatch(setAuthenticated(false));
     } else {

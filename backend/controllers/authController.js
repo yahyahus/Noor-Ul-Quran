@@ -41,6 +41,7 @@ const generateToken = (user) => {
     username: user.username // Adding username can be useful for frontend
   };
   
+  
   return jwt.sign(
     payload,
     process.env.JWT_SECRET || 'mysecret',

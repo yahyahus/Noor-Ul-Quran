@@ -16,8 +16,9 @@ export const login = async (email, password, navigate) => {
       store.dispatch(setAuthenticated(true));
 
       // Set the role in the store
-      store.dispatch(setRole(data.role));
-      navigate('/portal');
+      store.dispatch(setRole(data.data.user.role));
+      console.log(`Navigating to /portal/${data.data.user.role}/dashboard`);
+      navigate(`/portal/${data.data.user.role}/dashboard`);
       return { success: true };
     }
     if (response.status === 401) {
@@ -43,7 +44,8 @@ export const register = async (email, password, firstname, lastname, navigate) =
     
     if (response.ok) {
       store.dispatch(setAuthenticated(true));
-      navigate('/portal');
+      console.log('Navigating to /portal/${role}/dashboard');
+      navigate('/portal/${role}/dashboard');
       return { success: true };
     }
     

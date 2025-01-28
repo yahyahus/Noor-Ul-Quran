@@ -1,51 +1,168 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect, lazy , Suspense} from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import Login from './components/Login';
-import Register from './components/Register';
-import Portal from './components/features/Portal';
-import TeacherStudents from './components/features/TeacherStudents.jsx';
-import Attendance from './components/features/MarkAttendance.jsx';
-import UnassignedStudentsList from './components/features/UnassignedStudentsList.jsx';
-import ViewAttendance from './components/features/ViewAttendance.jsx';
-import MarkProgress from './components/features/MarkProgress.jsx';
-import CreateStudent from './components/features/CreateStudent';
-import AdminDashboard from './components/features/AdminDashboard';
-import StudentDashboard from './components/features/StudentDashboard';
-import TeacherDashboard from './components/features/TeacherDashboard';
-import { setAuthenticated } from '../src/store/slices/authSlice.js';
-import ViewProgress from './components/features/ViewProgress.jsx';
 import { checkAuth } from './hooks/useAuth';
-import ProtectedRoute from './components/ProtectedRoute'; 
+import AuthGuard from './components/ProtectedRoute';
+import LoadingSpinner from './components/features/LoadingSpinner';
+import { ROUTES } from './routes/routes';
+
+
+// Lazy load components
+const Login = lazy(() => import('./components/Login'));
+const Register = lazy(() => import('./components/Register'));
+const Portal = lazy(() => import('./components/features/Portal'));
+const TeacherStudents = lazy(() => import('./components/features/TeacherStudents'));
+const Attendance = lazy(() => import('./components/features/MarkAttendance'));
+const UnassignedStudentsList = lazy(() => import('./components/features/UnassignedStudentsList'));
+const ViewAttendance = lazy(() => import('./components/features/ViewAttendance'));
+const MarkProgress = lazy(() => import('./components/features/MarkProgress'));
+const CreateStudent = lazy(() => import('./components/features/CreateStudent'));
+const AdminDashboard = lazy(() => import('./components/features/AdminDashboard'));
+const StudentDashboard = lazy(() => import('./components/features/StudentDashboard'));
+const TeacherDashboard = lazy(() => import('./components/features/TeacherDashboard'));
+const ViewProgress = lazy(() => import('./components/features/ViewProgress'));
+
 function App() {
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const { isAuthenticated, isLoading } = useSelector((state) => state.auth);
   const role = useSelector((state) => state.role);
+
   useEffect(() => {
     checkAuth(dispatch);
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch]);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
-    <Routes>
-      
-      <Route path="/" element={!isAuthenticated ? <Navigate to="/login" /> : <Navigate to="/portal" />} />
-      <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/portal" />} />
-      <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/portal" />} />
-      <Route path="/portal" element={isAuthenticated ? <Portal /> : <Navigate to="/login" />} />
-      
-      <Route path="/portal/teacher-students" element={<ProtectedRoute element={<TeacherStudents />} allowedRoles={['teacher']} />}/>
-      <Route path="/portal/unassigned-students" element={<ProtectedRoute element={<UnassignedStudentsList />} allowedRoles={['admin']} />}/>
-      <Route path="/portal/mark-attendance" element={<ProtectedRoute element={<Attendance />} allowedRoles={['teacher']} />}/>
-      <Route path="/portal/attendance" element={<ProtectedRoute element={<ViewAttendance />} allowedRoles={['student']} />}/>
-      <Route path="/portal/mark-progress" element={<ProtectedRoute element={<MarkProgress />} allowedRoles={['teacher']} />}/>
-      <Route path="/portal/create-student" element={<ProtectedRoute element={<CreateStudent />} allowedRoles={['admin']} />} />
-      <Route path="/portal/admin/dashboard" element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={['admin']} />} />
-      <Route path="/portal/student/dashboard" element={<ProtectedRoute element={<StudentDashboard />} allowedRoles={['student']} />} />
-      <Route path="/portal/teacher/dashboard" element={<ProtectedRoute element={<TeacherDashboard />} allowedRoles={['teacher']} />} />
-      <Route path="/portal/view-progress" element={<ProtectedRoute element={<ViewProgress />} allowedRoles={['student']} />} />
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        {/* Public routes */}
+        <Route 
+          path="/" 
+          element={
+            isAuthenticated 
+              ? <Navigate to={`${ROUTES.PORTAL}/${role}/dashboard`} replace /> 
+              : <Navigate to={ROUTES.LOGIN} replace />
+          } 
+        />
+        <Route 
+          path={ROUTES.LOGIN} 
+          element={
+            isAuthenticated 
+              ? <Navigate to={`${ROUTES.PORTAL}/${role}/dashboard`} replace /> 
+              : <Login />
+          } 
+        />
+        <Route 
+          path={ROUTES.REGISTER} 
+          element={
+            isAuthenticated 
+              ? <Navigate to={`${ROUTES.PORTAL}/${role}/dashboard`} replace /> 
+              : <Register />
+          } 
+        />
 
-    </Routes>
-  );``
+        {/* Protected routes */}
+        <Route
+          path={ROUTES.PORTAL}
+          element={
+            <AuthGuard allowedRoles={['admin', 'teacher', 'student']}>
+              <Portal />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path={ROUTES.TEACHER_STUDENTS}
+          element={
+            <AuthGuard allowedRoles={['teacher']}>
+              <TeacherStudents />
+            </AuthGuard>
+          }
+        />
+        
+        <Route 
+          path={ROUTES.MARK_ATTENDANCE} 
+          element={
+            <AuthGuard allowedRoles={['teacher']}>
+              <Attendance />
+            </AuthGuard>
+          }
+        />
+        <Route 
+          path={ROUTES.UNASSIGNED_STUDENTS} 
+          element={
+            <AuthGuard allowedRoles={['admin']}>
+              <UnassignedStudentsList />
+            </AuthGuard>
+          }
+        />
+        <Route 
+          path={ROUTES.VIEW_ATTENDANCE} 
+          element={
+            <AuthGuard allowedRoles={['student']}>
+              <ViewAttendance />
+            </AuthGuard>
+          }
+        />
+        <Route 
+          path={ROUTES.MARK_PROGRESS} 
+          element={
+            <AuthGuard allowedRoles={['teacher']}>
+              <MarkProgress />
+            </AuthGuard>
+          }
+        />
+        <Route 
+          path={ROUTES.CREATE_STUDENT} 
+          element={
+            <AuthGuard allowedRoles={['admin']}>
+              <CreateStudent />
+            </AuthGuard>
+          }
+        />
+        <Route 
+          path={ROUTES.ADMIN_DASHBOARD} 
+          element={
+            <AuthGuard allowedRoles={['admin']}>
+              <AdminDashboard />
+            </AuthGuard>
+          }
+        />
+        <Route 
+          path={ROUTES.STUDENT_DASHBOARD} 
+          element={
+            <AuthGuard allowedRoles={['student']}>
+              <StudentDashboard />
+            </AuthGuard>
+          }
+        />
+        <Route 
+          path={ROUTES.TEACHER_DASHBOARD} 
+          element={
+            <AuthGuard allowedRoles={['teacher']}>
+              <TeacherDashboard />
+            </AuthGuard>
+          }
+        />
+        <Route 
+          path={ROUTES.VIEW_PROGRESS} 
+          element={
+            <AuthGuard allowedRoles={['student']}>
+              <ViewProgress />
+            </AuthGuard>
+          }
+        />
+        
+
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+
+
+      </Routes>
+    </Suspense>
+  );
 }
 
 export default App;
