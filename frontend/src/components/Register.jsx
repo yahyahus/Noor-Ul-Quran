@@ -1,5 +1,4 @@
-// RegisterPage.jsx
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRole } from '../store/slices/roleSlice';
@@ -16,22 +15,62 @@ import {
 } from "@/components/ui/select";
 import { BookOpen, UserPlus } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+// Form validation schema
+const registerSchema = z.object({
+  username: z.string()
+    .min(3, 'Username must be at least 3 characters')
+    .max(30, 'Username cannot exceed 30 characters')
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens')
+    ,
+  password: z.string()
+    .min(6, 'Password must be at least 6 characters')
+    .max(100, 'Password cannot exceed 100 characters')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+  firstname: z.string()
+    .min(1, 'First name is required')
+    .max(50, 'First name cannot exceed 50 characters')
+    .trim(),
+  lastname: z.string()
+    .min(1, 'Last name is required')
+    .max(50, 'Last name cannot exceed 50 characters')
+    .trim(),
+  role: z.enum(['student', 'teacher', 'admin'], {
+    required_error: 'Role is required',
+    invalid_type_error: 'Role must be either student, teacher, or admin'
+  })
+});
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
   const role = useSelector((state) => state.role);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
-  const [response, setResponse] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleRegister = async () => {
+  const {
+    register: registerField,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      role: role
+    }
+  });
+
+  const onSubmit = async (data) => {
     try {
-      const result = await register(email, password, firstname, lastname, navigate);
-      setResponse(result.message);
+      const result = await register(
+        data.username,
+        data.password,
+        data.firstname,
+        data.lastname,
+        navigate
+      );
       
       if (!result.success) {
         toast({
@@ -41,13 +80,17 @@ const RegisterPage = () => {
         });
       }
     } catch (error) {
-      setResponse("An unexpected error occurred. Please try again.");
       toast({
         variant: "destructive",
         title: "Error",
         description: "An unexpected error occurred. Please try again.",
       });
     }
+  };
+
+  const handleRoleChange = (value) => {
+    dispatch(setRole(value));
+    setValue('role', value);
   };
 
   return (
@@ -93,58 +136,82 @@ const RegisterPage = () => {
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                type="text"
-                placeholder="First Name"
-                value={firstname}
-                onChange={(e) => setFirstname(e.target.value)}
-                className="border-border/40 bg-background/95"
-              />
-              <Input
-                type="text"
-                placeholder="Last Name"
-                value={lastname}
-                onChange={(e) => setLastname(e.target.value)}
-                className="border-border/40 bg-background/95"
-              />
-            </div>
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="border-border/40 bg-background/95"
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="border-border/40 bg-background/95"
-            />
-            <Select
-              value={role}
-              onValueChange={(value) => dispatch(setRole(value))}
-            >
-              <SelectTrigger className="border-border/40 bg-background/95">
-                <SelectValue placeholder="Select role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="student">Student</SelectItem>
-                <SelectItem value="teacher">Teacher</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-              </SelectContent>
-            </Select>
-            {response && (
-              <p className="text-center text-red-500 text-sm">{response}</p>
-            )}
-            <Button
-              className="w-full bg-teal-600 hover:bg-teal-700 text-white"
-              onClick={handleRegister}
-            >
-              <UserPlus className="mr-2 h-4 w-4" /> Create Account
-            </Button>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Input
+                    type="text"
+                    placeholder="First Name"
+                    {...registerField('firstname')}
+                    className="border-border/40 bg-background/95"
+                  />
+                  {errors.firstname && (
+                    <p className="text-sm text-red-500">{errors.firstname.message}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Input
+                    type="text"
+                    placeholder="Last Name"
+                    {...registerField('lastname')}
+                    className="border-border/40 bg-background/95"
+                  />
+                  {errors.lastname && (
+                    <p className="text-sm text-red-500">{errors.lastname.message}</p>
+                  )}
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Input
+                  placeholder="Email"
+                  {...registerField('username')}
+                  className="border-border/40 bg-background/95"
+                />
+                {errors.username && (
+                  <p className="text-sm text-red-500">{errors.username.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  {...registerField('password')}
+                  className="border-border/40 bg-background/95"
+                />
+                {errors.password && (
+                  <p className="text-sm text-red-500">{errors.password.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Select
+                  value={role}
+                  onValueChange={handleRoleChange}
+                >
+                  <SelectTrigger className="border-border/40 bg-background/95">
+                    <SelectValue placeholder="Select role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="student">Student</SelectItem>
+                    <SelectItem value="teacher">Teacher</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.role && (
+                  <p className="text-sm text-red-500">{errors.role.message}</p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+              >
+                <UserPlus className="mr-2 h-4 w-4" /> Create Account
+              </Button>
+            </form>
+
             <div className="text-center text-sm text-muted-foreground">
               Already have an account?{' '}
               <Link 

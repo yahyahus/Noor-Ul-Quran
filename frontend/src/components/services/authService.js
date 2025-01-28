@@ -14,6 +14,8 @@ export const login = async (email, password, navigate) => {
     if (response.ok)
       {
       store.dispatch(setAuthenticated(true));
+
+      // Set the role in the store
       store.dispatch(setRole(data.role));
       navigate('/portal');
       return { success: true };

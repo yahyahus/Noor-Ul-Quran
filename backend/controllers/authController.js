@@ -85,7 +85,7 @@ const login = async (req, res) => {
       firstname: user.firstname,
       lastname: user.lastname
     };
-    
+    console.log(userData);
     return res.status(HTTP_STATUS.OK)
       .json(formatResponse(STATUS.SUCCESS, 'Login successful', { user: userData, token }));
       
