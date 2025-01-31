@@ -81,7 +81,7 @@ const StudentDashboard = () => {
               </CardHeader>
             </Card>
 
-          <div className="grid grid-cols-5 gap-4 h-[calc(100vh-280px)]">
+            <div className="grid grid-cols-5 gap-4 h-96">
             {/* Today's Progress Card - Improved spacing */}
             <Card className="col-span-3 shadow-sm">
               <CardHeader className="py-3">
@@ -183,8 +183,8 @@ const StudentDashboard = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="h-[calc(100%-2rem)]">
-                  <ResponsiveContainer width="100%" height="100%">
+              <div className="h-64">
+                                  <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={showManzil ? mockData.manzil : mockData.sabaq}
                       margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
