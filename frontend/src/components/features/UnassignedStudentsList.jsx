@@ -1,161 +1,235 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { fetchUnassignedStudents, fetchTeachers, assignStudent } from '../services/adminService';
+import React, { useEffect, useState } from 'react';
+import { Users, UserPlus, X, CheckCircle2, AlertCircle } from "lucide-react";
+import { 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
 import Header from '../Header';
 import Navbar from '../Navbar';
+import { fetchUnassignedStudents, fetchTeachers, assignStudent } from '../services/adminService';
 
 const UnassignedStudentsList = () => {
-    const [students, setStudents] = useState([]);
-    const [selectedStudents, setSelectedStudents] = useState([]);
-    const [isAssignMode, setIsAssignMode] = useState(false);
-    const [teachers, setTeachers] = useState([]);
-    const [selectedTeacher, setSelectedTeacher] = useState('');
-    const [loading, setLoading] = useState(true);
+  const [students, setStudents] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [isAssignMode, setIsAssignMode] = useState(false);
+  const [teachers, setTeachers] = useState([]);
+  const [selectedTeacher, setSelectedTeacher] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const [studentsData, teachersData] = await Promise.all([fetchUnassignedStudents(), fetchTeachers()]);
-                setStudents(studentsData);
-                setTeachers(teachersData);
-            } catch (error) {
-                console.error('Failed to fetch data', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
-
-    const handleCheckboxChange = useCallback((studentId) => {
-        setSelectedStudents((prevSelected) =>
-            prevSelected.includes(studentId)
-                ? prevSelected.filter((id) => id !== studentId)
-                : [...prevSelected, studentId]
-        );
-    }, []);
-
-    const handleAssignClick = async () => {
-        if (isAssignMode && selectedTeacher) {
-            const response = await assignStudent(selectedStudents, selectedTeacher);
-            if (response.ok) {
-                const updatedStudents = students.filter((student) => !selectedStudents.includes(student._id));
-                setStudents(updatedStudents);
-                setSelectedStudents([]);
-                setSelectedTeacher('');
-                alert('Students assigned successfully');
-            } else {
-                console.error('Failed to assign student');
-                console.log(response);
-            }
-        }
-        setIsAssignMode(!isAssignMode);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [studentsData, teachersData] = await Promise.all([
+          fetchUnassignedStudents(),
+          fetchTeachers()
+        ]);
+        setStudents(studentsData);
+        setTeachers(teachersData);
+      } catch (error) {
+        console.error('Failed to fetch data', error);
+      } finally {
+        setLoading(false);
+      }
     };
+    fetchData();
+  }, []);
 
-    const handleCancelClick = () => {
-        setIsAssignMode(false);
-        setSelectedStudents([]);
-    };
-
-    if (loading) {
-        return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
-    }
-
-    return (
-        <div className="flex flex-col min-h-screen bg-gray-100">
-            <Header />
-            <div className="flex flex-1">
-                <Navbar />
-                <main className="flex-1 p-8 bg-white shadow-md rounded-lg mx-6">
-                    <div className="flex justify-between items-center mb-6">
-                        <h1 className="text-3xl font-semibold text-gray-700">Unassigned Students</h1>
-                        <div>
-                            {isAssignMode && (
-                                <button
-                                    onClick={handleCancelClick}
-                                    className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded mr-2 shadow-md">
-                                    Cancel
-                                </button>
-                            )}
-                            <button
-                                onClick={handleAssignClick}
-                                className={`bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded shadow-md ${
-                                    selectedStudents.length === 0 && isAssignMode ? 'opacity-50 cursor-not-allowed' : ''
-                                }`}
-                                disabled={selectedStudents.length === 0 && isAssignMode}
-                            >
-                                {isAssignMode ? (teachers.length > 0 ? 'Assign' : 'Select Teacher') : 'Assign Students'}
-                            </button>
-                        </div>
-                    </div>
-
-                    <StudentTable
-                        students={students}
-                        isAssignMode={isAssignMode}
-                        handleCheckboxChange={handleCheckboxChange}
-                        selectedStudents={selectedStudents}
-                    />
-
-                    {isAssignMode && teachers.length > 0 && (
-                        <TeacherSelect
-                            teachers={teachers}
-                            selectedTeacher={selectedTeacher}
-                            setSelectedTeacher={setSelectedTeacher}
-                        />
-                    )}
-                </main>
-            </div>
-        </div>
+  const handleCheckboxChange = (studentId) => {
+    setSelectedStudents((prev) =>
+      prev.includes(studentId)
+        ? prev.filter((id) => id !== studentId)
+        : [...prev, studentId]
     );
-};
+  };
 
-const StudentTable = ({ students, isAssignMode, handleCheckboxChange, selectedStudents }) => (
-    <table className="w-full bg-gray-50 shadow-md rounded-lg mt-4">
-        <thead className="bg-gray-200 text-gray-700 uppercase text-sm">
-            <tr>
-                {isAssignMode && <th className="p-3"></th>}
-                <th className="text-left p-3">Firstname</th>
-                <th className="text-left p-3">Lastname</th>
-            </tr>
-        </thead>
-        <tbody className="text-gray-600 text-sm">
-            {students.map((student) => (
-                <tr key={student._id} className="border-b border-gray-200 hover:bg-gray-100">
-                    {isAssignMode && (
-                        <td className="p-3 text-center">
+  const handleAssignClick = async () => {
+    if (isAssignMode && selectedTeacher) {
+      try {
+        const response = await assignStudent(selectedStudents, selectedTeacher);
+        if (response.ok) {
+          setStudents((prev) => 
+            prev.filter((student) => !selectedStudents.includes(student._id))
+          );
+          setSelectedStudents([]);
+          setSelectedTeacher('');
+          setShowSuccess(true);
+          setTimeout(() => setShowSuccess(false), 3000);
+          setIsAssignMode(false);
+        }
+      } catch (error) {
+        console.error('Failed to assign students:', error);
+      }
+    } else {
+      setIsAssignMode(true);
+    }
+  };
+
+  const handleCancelClick = () => {
+    setIsAssignMode(false);
+    setSelectedStudents([]);
+    setSelectedTeacher('');
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-teal-500"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-screen">
+      <Header />
+      <div className="flex flex-1 overflow-hidden">
+        <Navbar />
+        <main className="flex-1 p-6 bg-gray-50">
+          <div className="max-w-6xl mx-auto space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800">Assign Students</h2>
+                <p className="text-sm text-gray-600">
+                  {students.length} unassigned students available
+                </p>
+              </div>
+              <div className="space-x-3">
+                {isAssignMode && (
+                  <Button
+                    variant="outline"
+                    onClick={handleCancelClick}
+                    className="border-red-200 text-red-600 hover:bg-red-50"
+                  >
+                    <X className="mr-2 h-4 w-4" />
+                    Cancel
+                  </Button>
+                )}
+                <Button
+                  onClick={handleAssignClick}
+                  disabled={isAssignMode && (selectedStudents.length === 0 || !selectedTeacher)}
+                  className="bg-teal-500 hover:bg-teal-600 text-white"
+                >
+                  {isAssignMode ? (
+                    <>
+                      <CheckCircle2 className="mr-2 h-4 w-4" />
+                      Confirm Assignment
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Assign Students
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {showSuccess && (
+              <Alert className="bg-teal-50 text-teal-800 border-teal-200">
+                <CheckCircle2 className="h-4 w-4" />
+                <AlertTitle>Success</AlertTitle>
+                <AlertDescription>
+                  Students have been successfully assigned to the teacher.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {isAssignMode && teachers.length > 0 && (
+              <Card className="border-teal-100">
+                <CardHeader className="py-4">
+                  <CardTitle className="text-base font-medium flex items-center gap-2">
+                    <Users className="h-4 w-4 text-teal-500" />
+                    Select Teacher
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Select
+                    value={selectedTeacher}
+                    onValueChange={setSelectedTeacher}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a teacher" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teachers.map((teacher) => (
+                        <SelectItem key={teacher._id} value={teacher._id}>
+                          {teacher.firstname} {teacher.lastname}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card>
+              <CardHeader className="py-4">
+                <CardTitle className="text-base font-medium flex items-center gap-2">
+                  <Users className="h-4 w-4 text-teal-500" />
+                  Unassigned Students
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      {isAssignMode && (
+                        <TableHead className="w-[50px]"></TableHead>
+                      )}
+                      <TableHead>First Name</TableHead>
+                      <TableHead>Last Name</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {students.map((student) => (
+                      <TableRow key={student._id}>
+                        {isAssignMode && (
+                          <TableCell>
                             <input
-                                type="checkbox"
-                                checked={selectedStudents.includes(student._id)}
-                                onChange={() => handleCheckboxChange(student._id)}
-                                className="text-blue-600 focus:ring-blue-500 rounded"
+                              type="checkbox"
+                              checked={selectedStudents.includes(student._id)}
+                              onChange={() => handleCheckboxChange(student._id)}
+                              className="h-4 w-4 rounded border-gray-300 text-teal-500 focus:ring-teal-500"
                             />
-                        </td>
-                    )}
-                    <td className="p-3">{student.firstname}</td>
-                    <td className="p-3">{student.lastname}</td>
-                </tr>
-            ))}
-        </tbody>
-    </table>
-);
-
-const TeacherSelect = ({ teachers, selectedTeacher, setSelectedTeacher }) => (
-    <div className="mt-6">
-        <label htmlFor="teacherSelect" className="block text-sm font-medium text-gray-700 mb-1">Select Teacher:</label>
-        <select
-            id="teacherSelect"
-            value={selectedTeacher}
-            onChange={(e) => setSelectedTeacher(e.target.value)}
-            className="block w-full bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 p-3"
-        >
-            <option value="">-- Select Teacher --</option>
-            {teachers.map((teacher) => (
-                <option key={teacher._id} value={teacher._id}>
-                    {teacher.firstname} {teacher.lastname}
-                </option>
-            ))}
-        </select>
+                          </TableCell>
+                        )}
+                        <TableCell>{student.firstname}</TableCell>
+                        <TableCell>{student.lastname}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+      </div>
     </div>
-);
+  );
+};
 
 export default UnassignedStudentsList;

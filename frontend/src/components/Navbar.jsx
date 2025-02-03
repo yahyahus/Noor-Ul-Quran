@@ -27,19 +27,19 @@ const navItems = {
     { name: "View Progress", path: "/portal/view-progress", icon: BookOpen },
     { name: "Attendance", path: "/portal/attendance", icon: Calendar },
     { name: "Notifications", path: "/portal/notifications", icon: Bell },
-    { name: "Settings", path: "/portal/settings", icon: Settings },
+    { name: "Settings", path: "/portal/student-settings", icon: Settings },
   ],
   teacher: [
     { name: "Dashboard", path: "/portal/teacher/dashboard", icon: LayoutDashboard },
-    { name: "Students", path: "/portal/teacher-students", icon: GraduationCap },
     { name: "Mark Progress", path: "/portal/mark-progress", icon: ScrollText },
     { name: "Mark Attendance", path: "/portal/mark-attendance", icon: Calendar },
+    { name: "Settings", path: "/portal/teacher-settings", icon: Settings },
   ],
   admin: [
     { name: "Dashboard", path: "/portal/admin/dashboard", icon: LayoutDashboard },
     { name: "Unassigned Students", path: "/portal/unassigned-students", icon: Users },
     { name: "Create User", path: "/portal/create-student", icon: UserPlus },
-    { name: "Settings", path: "/portal/settings", icon: Settings },
+    { name: "Settings", path: "/portal/admin-settings", icon: Settings },
   ],
 };
 

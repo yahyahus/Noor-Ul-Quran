@@ -21,6 +21,9 @@ const AdminDashboard = lazy(() => import('./components/features/AdminDashboard')
 const StudentDashboard = lazy(() => import('./components/features/StudentDashboard'));
 const TeacherDashboard = lazy(() => import('./components/features/TeacherDashboard'));
 const ViewProgress = lazy(() => import('./components/features/ViewProgress'));
+const StudentSettings = lazy(() => import('./components/features/StudentSettings'));
+const TeacherSettings = lazy(() => import('./components/features/TeacherSettings'));
+const AdminSettings = lazy(() => import('./components/features/AdminSettings'));
 
 function App() {
   const dispatch = useDispatch();
@@ -155,6 +158,32 @@ function App() {
           }
         />
         
+        <Route
+          path={ROUTES.STUDENT_SETTINGS}
+          element={
+            <AuthGuard allowedRoles={['student']}>
+              <StudentSettings />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path={ROUTES.TEACHER_SETTINGS}
+          element={
+            <AuthGuard allowedRoles={['teacher']}>
+              <TeacherSettings />
+            </AuthGuard>
+          }
+        />
+
+        <Route
+          path={ROUTES.ADMIN_SETTINGS}
+          element={
+            <AuthGuard allowedRoles={['admin']}>
+              <AdminSettings />
+            </AuthGuard>
+          }
+        />
+
 
 
         <Route path="*" element={<Navigate to="/" replace />} />

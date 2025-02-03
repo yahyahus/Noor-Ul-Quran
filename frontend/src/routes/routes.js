@@ -1,3 +1,5 @@
+import { Settings } from "lucide-react";
+
 export const ROUTES = {
     LOGIN: '/login',
     REGISTER: '/register',
@@ -11,6 +13,9 @@ export const ROUTES = {
     VIEW_ATTENDANCE: '/portal/attendance',
     MARK_PROGRESS: '/portal/mark-progress',
     VIEW_PROGRESS: '/portal/view-progress',
-    CREATE_STUDENT: '/portal/create-student'
+    CREATE_STUDENT: '/portal/create-student',
+    STUDENT_SETTINGS: '/portal/student-settings',
+    TEACHER_SETTINGS: '/portal/teacher-settings',
+    ADMIN_SETTINGS: '/portal/admin-settings',
   };
     
