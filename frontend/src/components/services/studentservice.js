@@ -88,6 +88,75 @@ const fetchStudentProgress = async (date) => {
     }
 };
 
-  
-  export { fetchStudents, fetchAttendance, fetchStudentProgress , getProgress};
+// Add these functions to studentService.js
+
+const getTodayProgress = async () => {
+  try {
+      const response = await fetch('http://localhost:5000/student/today-progress', {
+          method: 'GET',
+          credentials: 'include',
+      });
+
+      if (response.ok) {
+          const data = await response.json();
+          return data.data;
+      }
+      console.error('Failed to fetch today\'s progress');
+      return null;
+  } catch (error) {
+      console.error('Failed to fetch today\'s progress', error);
+      return null;
+  }
+};
+
+const getWeeklyProgress = async () => {
+  try {
+      const response = await fetch('http://localhost:5000/student/weekly-progress', {
+          method: 'GET',
+          credentials: 'include',
+      });
+
+      if (response.ok) {
+          const data = await response.json();
+          return data.data;
+      }
+      console.error('Failed to fetch weekly progress');
+      return null;
+  } catch (error) {
+      console.error('Failed to fetch weekly progress', error);
+      return null;
+  }
+};
+
+const getCurrentJuzzInfo = async () => {
+  try {
+      const response = await fetch('http://localhost:5000/student/current-juzz', {
+          method: 'GET',
+          credentials: 'include',
+      });
+
+      if (response.ok) {
+          const data = await response.json();
+          return data.data;
+      }
+      console.error('Failed to fetch current juzz info');
+      return null;
+  } catch (error) {
+      console.error('Failed to fetch current juzz info', error);
+      return null;
+  }
+};
+
+// Add these to the export statement
+export { 
+  fetchStudents, 
+  fetchAttendance, 
+  fetchStudentProgress, 
+  getProgress,
+  getTodayProgress,    // new
+  getWeeklyProgress,   // new
+  getCurrentJuzzInfo   // new
+};  
+
+
   

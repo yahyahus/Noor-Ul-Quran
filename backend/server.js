@@ -22,7 +22,7 @@ app.use(express.json());
 app.use('/', authRoutes);
 app.use('/', generalroutes);
 app.use('/teacher', teacherRoutes);
-app.use('/admin', adminRoutes);
+app.use('/admin', adminRoutes); 
 app.use('/student', studentRoutes);
 
 app.get('/', (req, res) => {
