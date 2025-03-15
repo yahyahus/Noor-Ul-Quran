@@ -18,7 +18,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 
 import { Button} from "@/components/ui/button";
-import { Separator } from "@/components/ui/Separator";
+import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navItems = {
