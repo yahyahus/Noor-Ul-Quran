@@ -5,7 +5,7 @@ import {
   BookOpen
 } from "lucide-react";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/Badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
