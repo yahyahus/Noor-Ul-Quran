@@ -19,7 +19,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 import { Button} from "@/components/ui/button";
 import { Separator } from "@/components/ui/Separator";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navItems = {
   student: [
