@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-let mongoStr = 'mongodb+srv://ibrahimumair900:demotest123@cluster0.dvaqrpv.mongodb.net/newcred';
+let mongoStr = 'mongodb+srv://yahyahus187:project187@noorulquran.ovgin.mongodb.net/?retryWrites=true&w=majority&appName=NoorulQuran';
 
 const connectDB = async () => {
   try {

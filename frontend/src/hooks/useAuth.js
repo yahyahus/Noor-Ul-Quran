@@ -1,10 +1,12 @@
+import { API_BASE_URL } from "../config";
+
 // useAuth.js
 import { setAuthenticated } from '../store/slices/authSlice.js';
 import { setRole } from '../store/slices/roleSlice.js';
 
 export const checkAuth = async (dispatch) => {
   try {
-    const response = await fetch('http://localhost:5000/isloggedin', {
+    const response = await fetch('${API_BASE_URL}/isloggedin', {
       method: 'GET',
       credentials: 'include',
     });

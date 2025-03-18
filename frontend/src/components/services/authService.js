@@ -1,10 +1,11 @@
 import store from '../../store/store.js';
 import { setAuthenticated } from '../../store/slices/authSlice.js';
 import { setRole } from '../../store/slices/roleSlice.js';
+import { API_BASE_URL } from "../config";
 
 export const login = async (email, password, navigate) => {
   try {
-    const response = await fetch('http://localhost:5000/login', {
+    const response = await fetch('${API_BASE_URL}/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: email, password }),
@@ -34,7 +35,7 @@ export const register = async (email, password, firstname, lastname, navigate) =
   try {
     const role = store.getState().role;
 
-    const response = await fetch('http://localhost:5000/register', {
+    const response = await fetch('${API_BASE_URL}/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: email, password, firstname, lastname, role }),
