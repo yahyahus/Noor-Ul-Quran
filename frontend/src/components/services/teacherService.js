@@ -1,7 +1,9 @@
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const getAttendance = async (month, year) => {
 
     try {
-        const response = await fetch(`http://localhost:5000/teacher/get-attendance?month=${month}&year=${year}`, {
+        const response = await fetch(`${API_BASE_URL}/teacher/get-attendance?month=${month}&year=${year}`, {
             method: 'GET',
             credentials: 'include',
         });
@@ -22,8 +24,8 @@ const getAttendance = async (month, year) => {
 const markAttendance = async (studentId, date, status) => {
     try {
         console.log('Marking attendance:', studentId, date, status);
-        const response = await fetch('http://localhost:5000/teacher/mark-attendance', {
-            method: 'POST',
+        const response = await fetch(`${API_BASE_URL}/teacher/mark-attendance`, {
+        method: 'POST',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,8 +49,8 @@ const markAttendance = async (studentId, date, status) => {
 
 const markSabaq = async (studentId, date, sabaqDetails) => {
     try {
-        const response = await fetch('http://localhost:5000/teacher/mark-sabaq', {
-            method: 'POST',
+        const response = await fetch(`${API_BASE_URL}/teacher/mark-sabaq`, {
+        method: 'POST',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
@@ -78,8 +80,8 @@ const markSabaq = async (studentId, date, sabaqDetails) => {
 
 const markSabqi = async (studentId, date, sabqiDetails) => {
     try {
-        const response = await fetch('http://localhost:5000/teacher/mark-sabqi', {
-            method: 'POST',
+        const response = await fetch(`${API_BASE_URL}/teacher/mark-sabqi`, {
+        method: 'POST',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
@@ -110,7 +112,7 @@ const markManzil = async (studentId, date, manzilDetails) => {
     try {
         //logging the manzil details
         console.log('Marking manzil:', studentId, date, manzilDetails);
-        const response = await fetch('http://localhost:5000/teacher/mark-manzil', {
+        const response = await fetch(`${API_BASE_URL}/teacher/mark-manzil`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -140,8 +142,8 @@ const markManzil = async (studentId, date, manzilDetails) => {
 
 const getProgress = async (month, year) => {
     try {
-        const response = await fetch(`http://localhost:5000/teacher/get-progress?month=${month}&year=${year}`, {
-            method: 'GET',
+        const response = await fetch(`${API_BASE_URL}/teacher/get-progress?month=${month}&year=${year}`, {   
+        method: 'GET',
             credentials: 'include',
         });
 
@@ -158,7 +160,40 @@ const getProgress = async (month, year) => {
         return { students: [] }; // Return an empty array in case of an error
     }
 };
+const getDashboardStats = async () => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/teacher/dashboard-stats`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data.stats;
+        } else {
+            console.error('Failed to fetch dashboard stats');
+            return {
+                totalStudents: 0,
+                pendingSabaq: 0,
+                pendingManzil: 0,
+                topPerformer: null,
+                todayProgress: []
+            };
+        }
+    } catch (error) {
+        console.error('Failed to fetch dashboard stats:', error);
+        return {
+            totalStudents: 0,
+            pendingSabaq: 0,
+            pendingManzil: 0,
+            topPerformer: null,
+            todayProgress: []
+        };
+    }
+};
 
 
-
-export { getAttendance, markAttendance , markSabaq, markSabqi, markManzil, getProgress };
+export { getAttendance, markAttendance , markSabaq, markSabqi, markManzil, getProgress, getDashboardStats };

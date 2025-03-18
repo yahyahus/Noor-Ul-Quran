@@ -15,4 +15,5 @@ router.post('/mark-manzil',authenticateToken,checkRole('teacher'),markManzil);
 router.get('/get-progress',authenticateToken,checkRole('teacher'),getMonthlyProgress);
 router.get('/get-student-progress',authenticateToken,checkRole('teacher'),getStudentsProgressForDate);
 
+
 module.exports = router;

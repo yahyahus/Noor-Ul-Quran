@@ -106,52 +106,49 @@ const markAttendance = async (req, res) => {
 };
 
 const getMonthlyAttendance = async (req, res) => {
-  const { month, year } = req.query;  
+  const { month, year } = req.query;
   const teacherId = req.user.id;
 
   try {
-    // Get the working days for the given month
+    // Get all working days once
     const workingDays = await getWorkingDays(month, year);
+    const normalizedWorkingDays = workingDays.map(date => new Date(date).toISOString().split('T')[0]); 
 
-    // Create an array of students. Each student will have an object with their id, name, and an array of attendance for each working day
-    const students = [];
+    // Fetch all students assigned to the teacher
     const teacher = await User.findById(teacherId).populate('teacherInfo.students');
+    const studentIds = teacher.teacherInfo.students.map(student => student._id);
 
-    for (const student of teacher.teacherInfo.students) {
-      const studentAttendance = {
-        id: student._id,
-        name: `${student.firstname} ${student.lastname}`,
-        attendance: []
-      };
+    // Fetch attendance for all students in a single query
+    const attendanceRecords = await Attendance.find({
+      studentId: { $in: studentIds },
+      teacherId,
+      date: { $in: normalizedWorkingDays }
+    }).lean(); // Use lean() for better performance
 
-      for (const date of workingDays) {
-        // Convert working day strings to 'YYYY-MM-DD' format
-        const normalizedDate = new Date(date).toISOString().split('T')[0]; 
+    // Convert attendance records into a map for quick lookup
+    const attendanceMap = new Map();
+    attendanceRecords.forEach(attendance => {
+      const key = `${attendance.studentId}-${attendance.date}`;
+      attendanceMap.set(key, attendance.status);
+    });
 
-        // Find the attendance for the student on the given date
-        const attendance = await Attendance.findOne({
-          studentId: student._id,
-          teacherId,
-          date: normalizedDate // Use normalizedDate to match the Attendance model format
-        });
-
-        if (attendance) {
-          studentAttendance.attendance.push({
-            date: normalizedDate,
-            status: attendance.status
-          });
-        }
-      }
-      students.push(studentAttendance);
-    }
+    // Structure the response
+    const students = teacher.teacherInfo.students.map(student => ({
+      id: student._id,
+      name: `${student.firstname} ${student.lastname}`,
+      attendance: normalizedWorkingDays.map(date => ({
+        date,
+        status: attendanceMap.get(`${student._id}-${date}`) || "Not Marked"
+      }))
+    }));
 
     res.status(200).json({ students });
-  }
-  catch (error) {
-    console.error('Error fetching monthly attendance:', error);
-    res.status(500).json({ message: 'Server error' });
+  } catch (error) {
+    console.error("Error fetching monthly attendance:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
+
 const markSabaq = async (req, res) => {
   const { studentId, date, sabaq: sabaqDetails } = req.body;
   const teacherId = req.user.id;
@@ -450,6 +447,7 @@ const getStudentsProgressForDate = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 
 

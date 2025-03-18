@@ -1,7 +1,9 @@
 // services/studentservice.js
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const fetchStudents = async () => {
     try {
-      const response = await fetch('http://localhost:5000/teacher/get-students', {
+      const response = await fetch(`${API_BASE_URL}/teacher/get-students`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -22,7 +24,7 @@ const fetchStudents = async () => {
 const fetchStudentProgress = async (date) => {
     try {
         const response = await fetch(
-            `http://localhost:5000/teacher/get-student-progress?date=${date}`,
+            `${API_BASE_URL}/teacher/get-student-progress?date=${date}`,
             {
                 method: 'GET',
                 credentials: 'include',
@@ -43,7 +45,7 @@ const fetchStudentProgress = async (date) => {
 
   const fetchAttendance = async (month, year) => {
     try {
-      const response = await fetch(`http://localhost:5000/student/attendance?month=${month}&year=${year}`, {
+      const response = await fetch(`${API_BASE_URL}/student/attendance?month=${month}&year=${year}`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -64,7 +66,7 @@ const fetchStudentProgress = async (date) => {
 
   const getProgress = async (date) => {
     try {
-        const response = await fetch(`http://localhost:5000/student/view-progress?date=${date}`, {
+        const response = await fetch(`${API_BASE_URL}/student/view-progress?date=${date}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -92,7 +94,7 @@ const fetchStudentProgress = async (date) => {
 
 const getTodayProgress = async () => {
   try {
-      const response = await fetch('http://localhost:5000/student/today-progress', {
+      const response = await fetch(`${API_BASE_URL}/student/today-progress`, {
           method: 'GET',
           credentials: 'include',
       });
@@ -111,7 +113,7 @@ const getTodayProgress = async () => {
 
 const getWeeklyProgress = async () => {
   try {
-      const response = await fetch('http://localhost:5000/student/weekly-progress', {
+      const response = await fetch(`${API_BASE_URL}/student/weekly-progress`, {
           method: 'GET',
           credentials: 'include',
       });
@@ -130,7 +132,7 @@ const getWeeklyProgress = async () => {
 
 const getCurrentJuzzInfo = async () => {
   try {
-      const response = await fetch('http://localhost:5000/student/current-juzz', {
+      const response = await fetch(`${API_BASE_URL}/student/current-juzz`, {
           method: 'GET',
           credentials: 'include',
       });
@@ -156,7 +158,6 @@ export {
   getTodayProgress,    // new
   getWeeklyProgress,   // new
   getCurrentJuzzInfo   // new
-};  
+};
 
 
-  

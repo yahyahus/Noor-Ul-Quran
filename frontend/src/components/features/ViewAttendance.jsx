@@ -37,7 +37,7 @@ const ViewAttendance = () => {
 
                 const formattedWorkingDays = workingDaysData.map(date => {
                     const dateStr = new Date(date).toDateString();
-                    return { date, status: attendanceMap[dateStr] || 'Not Marked' };
+                    return { date, status: attendanceMap[dateStr] || 'Not Marked' }; 
                 });
 
                 setAttendance(formattedWorkingDays);
@@ -92,8 +92,8 @@ const ViewAttendance = () => {
                                     <div className="flex items-center space-x-2">
                                         <Calendar className="h-6 w-6 text-teal-600 dark:text-teal-400" />
                                         <h2 className="text-2xl font-semibold text-teal-700 dark:text-teal-500">
-Attendance Record              </h2>
-              
+                                            Attendance Record
+                                        </h2>
                                     </div>
                                 </CardTitle>
                                 <div className="flex items-center space-x-4">

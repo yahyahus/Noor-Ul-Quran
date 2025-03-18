@@ -1,6 +1,8 @@
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const getWorkingDays = async (month, year) => {
     try {
-        const response = await fetch(`http://localhost:5000/get-working-days?month=${month}&year=${year}`, {
+        const response = await fetch(`${API_BASE_URL}/get-working-days?month=${month}&year=${year}`, {
             method: 'GET',
         });
 
@@ -19,7 +21,7 @@ const getWorkingDays = async (month, year) => {
 
 const fetchJuzzNames = async () => {
     try {
-        const response = await fetch('http://localhost:5000/fetch-juzz-names', {
+        const response = await fetch(`${API_BASE_URL}/fetch-juzz-names`, {
             method: 'GET',
         });
 

@@ -5,27 +5,36 @@ const Progress = require('../models/Progress');
 const { startOfWeek, endOfWeek, format } = require('date-fns');
 
 const getAttendance = async (req, res) => {
-    const {month, year} = req.query;
+    const { month, year } = req.query;
     const studentId = req.user.id;
 
-    const WorkingDays = await getWorkingDays(month, year);
-    const attendanceList = [];
+    const WorkingDays = await getWorkingDays(month, year); // Get all working days
+
     try {
-        for(const date of WorkingDays)
-            {
-            const attendance = await Attendance.findOne({studentId, date});
-            if(attendance)
-                {
-                attendanceList.push({date, status: attendance.status});
-                }
-        }
-        res.status(200).json({attendanceList});
-    }
-    catch (error) {
-        console.error('Error fetching attendance:', error);
-        res.status(500).json({message: 'Server error'});
+        // Fetch all attendance records for the student in one query
+        const attendanceRecords = await Attendance.find({
+            studentId,
+            date: { $in: WorkingDays }
+        }).lean(); // Using .lean() for faster read performance
+
+        // Convert attendance records into a map for easy lookup
+        const attendanceMap = new Map(attendanceRecords.map(record => [record.date, record.status]));
+
+        // Generate the final attendance list
+        const attendanceList = WorkingDays.map(date => {
+            return { 
+                date, 
+                status: attendanceMap.has(date) ? attendanceMap.get(date) : "Not Marked"
+            };
+        });
+
+        res.status(200).json({ attendanceList });
+    } catch (error) {
+        console.error("Error fetching attendance:", error);
+        res.status(500).json({ message: "Server error" });
     }
 };
+
 
 const viewProgress = async (req, res) => {
     const { date } = req.query; // Date passed as a query parameter
