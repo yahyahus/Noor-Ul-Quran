@@ -10,7 +10,7 @@ export const useLogoutHelper = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('${API_BASE_URL}/logout', {
+      const response = await fetch(`${API_BASE_URL}/logout`, {
         method: 'POST',
         credentials: 'include',
       });

@@ -3,7 +3,7 @@ import { API_BASE_URL } from "../config";
 // services/studentservice.js
 const fetchStudents = async () => {
     try {
-      const response = await fetch('${API_BASE_URL}/teacher/get-students', {
+      const response = await fetch(`${API_BASE_URL}/teacher/get-students`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -94,7 +94,7 @@ const fetchStudentProgress = async (date) => {
 
 const getTodayProgress = async () => {
   try {
-      const response = await fetch('${API_BASE_URL}/student/today-progress', {
+      const response = await fetch(`${API_BASE_URL}/student/today-progress`, {
           method: 'GET',
           credentials: 'include',
       });
@@ -113,7 +113,7 @@ const getTodayProgress = async () => {
 
 const getWeeklyProgress = async () => {
   try {
-      const response = await fetch('${API_BASE_URL}/student/weekly-progress', {
+      const response = await fetch(`${API_BASE_URL}/student/weekly-progress`, {
           method: 'GET',
           credentials: 'include',
       });
@@ -132,7 +132,7 @@ const getWeeklyProgress = async () => {
 
 const getCurrentJuzzInfo = async () => {
   try {
-      const response = await fetch('${API_BASE_URL}/student/current-juzz', {
+      const response = await fetch(`${API_BASE_URL}/student/current-juzz`, {
           method: 'GET',
           credentials: 'include',
       });

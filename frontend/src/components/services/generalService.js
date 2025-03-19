@@ -21,7 +21,7 @@ const getWorkingDays = async (month, year) => {
 
 const fetchJuzzNames = async () => {
     try {
-        const response = await fetch('${API_BASE_URL}/fetch-juzz-names', {
+        const response = await fetch(`${API_BASE_URL}/fetch-juzz-names`, {
             method: 'GET',
         });
 

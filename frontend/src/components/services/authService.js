@@ -5,7 +5,7 @@ import { API_BASE_URL } from "../config";
 
 export const login = async (email, password, navigate) => {
   try {
-    const response = await fetch('${API_BASE_URL}/login', {
+    const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: email, password }),
@@ -35,7 +35,7 @@ export const register = async (email, password, firstname, lastname, navigate) =
   try {
     const role = store.getState().role;
 
-    const response = await fetch('${API_BASE_URL}/register', {
+    const response = await fetch(`${API_BASE_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: email, password, firstname, lastname, role }),

@@ -2,7 +2,7 @@ import { API_BASE_URL } from "../config";
 
 const fetchUnassignedStudents = async () => {
     try {
-      const response = await fetch('${API_BASE_URL}/admin/unassigned-students', {
+      const response = await fetch(`${API_BASE_URL}/admin/unassigned-students`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -23,7 +23,7 @@ const fetchUnassignedStudents = async () => {
 
   const fetchTeachers = async () => {
     try {
-      const response = await fetch('${API_BASE_URL}/admin/get-teachers', {
+      const response = await fetch(`${API_BASE_URL}/admin/get-teachers`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -43,7 +43,7 @@ const fetchUnassignedStudents = async () => {
     }
  const assignStudent = async (studentId, teacherId) => {
     try {
-      const response = await fetch('${API_BASE_URL}/admin/assign-student', {
+      const response = await fetch(`${API_BASE_URL}/admin/assign-student`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -63,7 +63,7 @@ const fetchUnassignedStudents = async () => {
 
 const createStudent = async (username, password, firstname, lastname) => {
   try {
-    const response = await fetch('${API_BASE_URL}/admin/create-student', {
+    const response = await fetch(`${API_BASE_URL}/admin/create-student`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -82,7 +82,7 @@ const createStudent = async (username, password, firstname, lastname) => {
 
 const createTeacher = async (username, password, firstname, lastname) => {
   try {
-    const response = await fetch('${API_BASE_URL}/admin/create-teacher', {
+    const response = await fetch(`${API_BASE_URL}/admin/create-teacher`, {
       method: 'POST',
       credentials: 'include',
       headers: {

@@ -24,7 +24,7 @@ const getAttendance = async (month, year) => {
 const markAttendance = async (studentId, date, status) => {
     try {
         console.log('Marking attendance:', studentId, date, status);
-        const response = await fetch('${API_BASE_URL}/teacher/mark-attendance', {
+        const response = await fetch(`${API_BASE_URL}/teacher/mark-attendance`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -49,7 +49,7 @@ const markAttendance = async (studentId, date, status) => {
 
 const markSabaq = async (studentId, date, sabaqDetails) => {
     try {
-        const response = await fetch('${API_BASE_URL}/teacher/mark-sabaq', {
+        const response = await fetch(`${API_BASE_URL}/teacher/mark-sabaq`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -80,7 +80,7 @@ const markSabaq = async (studentId, date, sabaqDetails) => {
 
 const markSabqi = async (studentId, date, sabqiDetails) => {
     try {
-        const response = await fetch('${API_BASE_URL}/teacher/mark-sabqi', {
+        const response = await fetch(`${API_BASE_URL}/teacher/mark-sabqi`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -112,7 +112,7 @@ const markManzil = async (studentId, date, manzilDetails) => {
     try {
         //logging the manzil details
         console.log('Marking manzil:', studentId, date, manzilDetails);
-        const response = await fetch('${API_BASE_URL}/teacher/mark-manzil', {
+        const response = await fetch(`${API_BASE_URL}/teacher/mark-manzil`, {
             method: 'POST',
             credentials: 'include',
             headers: {
