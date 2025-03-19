@@ -1,7 +1,7 @@
 import store from '../../store/store.js';
 import { setAuthenticated } from '../../store/slices/authSlice.js';
 import { setRole } from '../../store/slices/roleSlice.js';
-import { API_BASE_URL } from "../config";
+import { API_BASE_URL } from "@/config";
 
 export const login = async (email, password, navigate) => {
   try {
