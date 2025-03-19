@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setAuthenticated } from '../../src/store/slices/authSlice.js';
+import { API_BASE_URL } from "../config";
+
 
 export const useLogoutHelper = () => {
   const navigate = useNavigate();
@@ -8,7 +10,7 @@ export const useLogoutHelper = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:5000/logout', {
+      const response = await fetch('${API_BASE_URL}/logout', {
         method: 'POST',
         credentials: 'include',
       });
