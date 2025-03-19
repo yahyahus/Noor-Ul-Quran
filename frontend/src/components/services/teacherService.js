@@ -160,40 +160,74 @@ const getProgress = async (month, year) => {
         return { students: [] }; // Return an empty array in case of an error
     }
 };
-const getDashboardStats = async () => {
-    try {
-        const response = await fetch(`${API_BASE_URL}/teacher/dashboard-stats`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
 
-        if (response.ok) {
-            const data = await response.json();
-            return data.stats;
-        } else {
-            console.error('Failed to fetch dashboard stats');
-            return {
-                totalStudents: 0,
-                pendingSabaq: 0,
-                pendingManzil: 0,
-                topPerformer: null,
-                todayProgress: []
-            };
+const getDashboardStats = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/teacher/dashboard-stats`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error('Failed to fetch dashboard stats');
+      return {
+        name: "Unknown Teacher",
+        totalStudents: 0,
+        pendingSabaq: 0,
+        topPerformer: {
+          name: "No data available",
+          sabaqLines: 0,
+          sabqiCompleted: false,
+          manzilRating: 0
         }
-    } catch (error) {
-        console.error('Failed to fetch dashboard stats:', error);
-        return {
-            totalStudents: 0,
-            pendingSabaq: 0,
-            pendingManzil: 0,
-            topPerformer: null,
-            todayProgress: []
-        };
+      };
     }
+  } catch (error) {
+    console.error('Failed to fetch dashboard stats', error);
+    return {
+      name: "Unknown Teacher",
+      totalStudents: 0,
+      pendingSabaq: 0,
+      topPerformer: {
+        name: "No data available",
+        sabaqLines: 0,
+        sabqiCompleted: false,
+        manzilRating: 0
+      }
+    };
+  }
 };
 
+const getTodayStudentProgress = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/teacher/today-progress`, {
+      method: 'GET',
+      credentials: 'include',
+    });
 
-export { getAttendance, markAttendance , markSabaq, markSabqi, markManzil, getProgress, getDashboardStats };
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error('Failed to fetch today\'s student progress');
+      return [];
+    }
+  } catch (error) {
+    console.error('Failed to fetch today\'s student progress', error);
+    return [];
+  }
+};
+
+export { 
+  getAttendance, 
+  markAttendance, 
+  markSabaq, 
+  markSabqi, 
+  markManzil, 
+  getProgress,
+  getDashboardStats,
+  getTodayStudentProgress
+};
