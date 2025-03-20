@@ -5,10 +5,7 @@ const mongoStr = process.env.MONGODB_URI || 'mongodb+srv://yahyahus187:project18
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(mongoStr, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(mongoStr); // ✅ No need for extra options
 
     console.log('✅ MongoDB connected successfully');
   } catch (error) {

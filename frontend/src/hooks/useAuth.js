@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "@/config";
+
 export const checkAuth = async (dispatch) => {
   try {
     const response = await fetch(`${API_BASE_URL}/isloggedin`, {
