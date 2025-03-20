@@ -1,9 +1,3 @@
-import { API_BASE_URL } from "@/config";
-//new
-// useAuth.js
-import { setAuthenticated } from '../store/slices/authSlice.js';
-import { setRole } from '../store/slices/roleSlice.js';
-
 export const checkAuth = async (dispatch) => {
   try {
     const response = await fetch(`${API_BASE_URL}/isloggedin`, {
@@ -12,17 +6,20 @@ export const checkAuth = async (dispatch) => {
     });
 
     if (response.ok) {
-      const data = await response.json();  // Parse the JSON body
-      //how to log the msg
+      const data = await response.json(); // Parse the JSON body
+      console.log('API Response:', data); // Log the response
+
+      if (data.message) {
+        console.log('Server Message:', data.message); // Log any message from the server
+      }
+
       dispatch(setAuthenticated(true));
-      dispatch(setRole(data.data.user.role));  // Set the role in the store
-    } else if (response.status === 403 || response.status === 401) {
-      dispatch(setAuthenticated(false));
+      dispatch(setRole(data.data?.user?.role)); // Use optional chaining to prevent errors
     } else {
+      console.log(`Auth Check Failed: ${response.status} - ${response.statusText}`);
       dispatch(setAuthenticated(false));
     }
   } catch (error) {
     console.error('Unexpected error:', error);
   }
 };
-

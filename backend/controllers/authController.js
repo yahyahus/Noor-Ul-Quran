@@ -161,6 +161,8 @@ const logout = (req, res) => {
 };
 
 const isLoggedIn = (req, res) => {
+  res.json({ loggedIn: true, user: req.user });
+  
   const token = req.cookies.token;
   
   if (!token) {
