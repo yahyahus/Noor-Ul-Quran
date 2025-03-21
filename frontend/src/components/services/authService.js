@@ -1,6 +1,6 @@
-import store from '../../store/store.js';
-import { setAuthenticated } from '../../store/slices/authSlice.js';
-import { setRole } from '../../store/slices/roleSlice.js';
+import store from '@/store/store.js';
+import { setAuthenticated } from '@/store/slices/authSlice.js';
+import { setRole } from '@/store/slices/roleSlice.js';
 import { API_BASE_URL } from "@/config";
 
 export const login = async (email, password, navigate) => {
@@ -45,8 +45,8 @@ export const register = async (email, password, firstname, lastname, navigate) =
     
     if (response.ok) {
       store.dispatch(setAuthenticated(true));
-      console.log('Navigating to /portal/${role}/dashboard');
-      navigate('/portal/${role}/dashboard');
+      console.log(`Navigating to /portal/${role}/dashboard`);
+      navigate(`/portal/${role}/dashboard`);
       return { success: true };
     }
     

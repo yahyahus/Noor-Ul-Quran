@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setAuthenticated } from '../../src/store/slices/authSlice.js';
-import { API_BASE_URL } from "@/config";
+import { setAuthenticated } from '../src/store/slices/authSlice.js';
+import { API_BASE_URL } from "../config";
 
 
 export const useLogoutHelper = () => {

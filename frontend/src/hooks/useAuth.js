@@ -1,4 +1,6 @@
 import { API_BASE_URL } from "@/config";
+import { setAuthenticated } from '@/store/slices/authSlice.js';
+import { setRole } from '@/store/slices/roleSlice.js';
 
 export const checkAuth = async (dispatch) => {
   try {
@@ -16,12 +18,15 @@ export const checkAuth = async (dispatch) => {
       }
 
       dispatch(setAuthenticated(true));
-      dispatch(setRole(data.data?.user?.role)); // Use optional chaining to prevent errors
+      dispatch(setRole({ role: data.data?.user?.role || '' })); // Ensure correct state update
     } else {
       console.log(`Auth Check Failed: ${response.status} - ${response.statusText}`);
       dispatch(setAuthenticated(false));
+      dispatch(setRole({ role: '' })); // Clear role on failure
     }
   } catch (error) {
     console.error('Unexpected error:', error);
+    dispatch(setAuthenticated(false));
+    dispatch(setRole({ role: '' })); // Ensure role resets on errors
   }
 };

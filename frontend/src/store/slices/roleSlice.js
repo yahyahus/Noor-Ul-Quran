@@ -1,11 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const initialState = {
+  role: 'student', // Keep state as an object
+};
+
 const roleSlice = createSlice({
   name: 'role',
-  initialState: 'student',
+  initialState,
   reducers: {
-    setRole: (state, action) => action.payload,
-    clearRole: () => '',
+    setRole: (state, action) => {
+      state.role = action.payload; // Update role inside the object
+    },
+    clearRole: (state) => {
+      state.role = ''; // Reset role
+    },
   },
 });
 
