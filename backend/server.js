@@ -16,8 +16,7 @@ connectDB();
 app.use(cors({
   origin: function (origin, callback) {
     const allowedOrigins = [
-      process.env.FRONTEND_URL,
-      "http://localhost:5173",
+      process.env.FRONTEND_URL || "http://localhost:5173",
       "https://noor-ul-quran1.vercel.app"
     ];
     
