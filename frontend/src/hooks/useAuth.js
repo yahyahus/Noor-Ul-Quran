@@ -9,24 +9,20 @@ export const checkAuth = async (dispatch) => {
       credentials: 'include',
     });
 
-    if (response.ok) {
-      const data = await response.json(); // Parse the JSON body
-      console.log('API Response:', data); // Log the response
+    const data = await response.json();
+    console.log('API Response:', data); // Debugging
 
-      if (data.message) {
-        console.log('Server Message:', data.message); // Log any message from the server
-      }
-
+    if (response.ok && data.status === "success" && data.data?.user) {
       dispatch(setAuthenticated(true));
-      dispatch(setRole({ role: data.data?.user?.role || '' })); // Ensure correct state update
+      dispatch(setRole({ role: data.data.user.role }));
     } else {
-      console.log(`Auth Check Failed: ${response.status} - ${response.statusText}`);
+      console.log(`Auth Check Failed: ${response.status} - ${data.message || response.statusText}`);
       dispatch(setAuthenticated(false));
-      dispatch(setRole({ role: '' })); // Clear role on failure
+      dispatch(setRole({ role: '' }));
     }
   } catch (error) {
     console.error('Unexpected error:', error);
     dispatch(setAuthenticated(false));
-    dispatch(setRole({ role: '' })); // Ensure role resets on errors
+    dispatch(setRole({ role: '' }));
   }
 };

@@ -161,18 +161,16 @@ const logout = (req, res) => {
 };
 
 const isLoggedIn = (req, res) => {
-  res.json({ loggedIn: true, user: req.user });
-  
-  const token = req.cookies.token;
-  
+  const token = req.cookies.token; // Get token from cookies
+
   if (!token) {
     return res.status(HTTP_STATUS.UNAUTHORIZED)
       .json(formatResponse(STATUS.ERROR, 'Authentication required'));
   }
-  
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'mysecret');
-    
+
     return res.status(HTTP_STATUS.OK)
       .json(formatResponse(STATUS.SUCCESS, 'User is authenticated', {
         user: {
@@ -181,13 +179,13 @@ const isLoggedIn = (req, res) => {
           username: decoded.username
         }
       }));
-      
   } catch (error) {
     console.error('Token verification error:', error);
     return res.status(HTTP_STATUS.FORBIDDEN)
       .json(formatResponse(STATUS.ERROR, 'Invalid or expired token'));
   }
 };
+
 
 module.exports = {
   login,
