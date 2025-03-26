@@ -31,6 +31,7 @@ function App() {
   const role = useSelector((state) => state.role);
 
   useEffect(() => {
+    console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
     checkAuth(dispatch);
   }, [dispatch]);
 
@@ -183,7 +184,6 @@ function App() {
             </AuthGuard>
           }
         />
-console.log("VITE_BACKEND_URL:", import.meta.env.VITE_BACKEND_URL);
 
 
 
