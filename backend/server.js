@@ -14,23 +14,24 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 app.use(cors({
-  // origin: "*",
   origin: function (origin, callback) {
     const allowedOrigins = [
       process.env.FRONTEND_URL || "http://localhost:5173",
       "https://noor-ul-quran1.vercel.app"
     ];
 
-  if(!origin || allowedOrigins.includes(origin)) {
-  callback(null, true);
-} else {
-  console.error("Blocked by CORS:", origin); // Log blocked requests
-  callback(new Error("Not allowed by CORS"));
+    if (!origin || allowedOrigins.includes(origin)) {  // ✅ Allow `null` origins (e.g., mobile apps)
+      callback(null, true);
+    } else {
+      console.error("Blocked by CORS:", origin);
+      callback(new Error("Not allowed by CORS"));
     }
-   },
-credentials: true,
+  },
+  credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE"], // ✅ Ensure all methods are allowed
 }));
+
 
 app.use(cookieParser());
 app.use(express.json());
