@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import LoadingSpinner from '../components/features/LoadingSpinner';
+import LoadingSpinner from '../components/features/LoadingSpinner.jsx';
 import { ROUTES } from '../routes/routes';
 //where to import suspense from?
 

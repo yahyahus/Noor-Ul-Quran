@@ -14,12 +14,12 @@ import {
 import { cn } from "@/lib/utils";
 
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card.jsx';
 
 
-import { Button} from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button} from "@/components/ui/button.jsx";
+import { Separator } from "@/components/ui/separator.jsx";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet.jsx";
 
 const navItems = {
   student: [
