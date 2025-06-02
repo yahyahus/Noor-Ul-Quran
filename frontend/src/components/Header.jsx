@@ -5,10 +5,10 @@ import {
   BookOpen
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button.jsx";
-import { Badge } from "@/components/ui/badge.jsx";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.jsx";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu.jsx";
+import { Button } from "@/components/ui/Button.jsx";
+import { Badge } from "@/components/ui/Badge.jsx";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar.jsx";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/Dropdown-menu.jsx";
 
 import { useLogoutHelper } from "./Logout";
 function Header() {
