@@ -315,14 +315,6 @@ const markManzil = async (req, res) => {
   }
 };
 
-
-
-
-    
-
-
-
-
 const getMonthlyProgress = async (req, res) => {
   const { month, year } = req.query;
   const teacherId = req.user.id;
@@ -448,7 +440,189 @@ const getStudentsProgressForDate = async (req, res) => {
   }
 };
 
+const getTeacherDashboardStats = async (req, res) => {
+  try {
+    const teacherId = req.user.id;
+    const today = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
+
+    // Get teacher info with students
+    const teacher = await User.findById(teacherId).populate('teacherInfo.students');
+    if (!teacher) {
+      return res.status(404).json({ message: 'Teacher not found' });
+    }
+
+    const studentIds = teacher.teacherInfo.students.map(student => student._id);
+    const totalStudents = studentIds.length;
+
+    const allTodayProgress = await Progress.find({
+      teacherId,
+      studentId: { $in: studentIds },
+      date: today
+    });
+    
+    // Create a set of student IDs who have any progress entry today
+    const studentsWithProgressToday = new Set(
+      allTodayProgress.map(progress => progress.studentId.toString())
+    );
+    
+    // Count students with completed sabaq
+    const completedSabaqCount = allTodayProgress.filter(progress => 
+      progress.sabaq && progress.sabaq.completed === true
+    ).length;
+    
+    // pendingSabaq = students with no progress + students with incomplete progress
+    const pendingSabaq = totalStudents - completedSabaqCount;
+    
+    console.log(pendingSabaq);
+    // Find the top performing student
+    // We'll calculate based on sabaq lines and quality ratings from the past week
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const oneWeekAgoString = oneWeekAgo.toISOString().split('T')[0];
+
+    // Get all student progress from past week
+    const weekProgress = await Progress.find({
+      teacherId,
+      studentId: { $in: studentIds },
+      date: { $gte: oneWeekAgoString }
+    }).populate('studentId', 'firstname lastname');
+
+    // Calculate student performance
+    const studentPerformance = {};
+    weekProgress.forEach(progress => {
+      const studentId = progress.studentId._id.toString();
+      
+      if (!studentPerformance[studentId]) {
+        studentPerformance[studentId] = {
+          id: studentId,
+          name: `${progress.studentId.firstname} ${progress.studentId.lastname}`,
+          totalLines: 0,
+          sabqiCompleted: false,
+          manzilRating: 0,
+          entriesCount: 0
+        };
+      }
+
+      // Sum up performance metrics
+      if (progress.sabaq && progress.sabaq.numberOfLines) {
+        studentPerformance[studentId].totalLines += progress.sabaq.numberOfLines;
+      }
+
+      if (progress.sabqi && progress.sabqi.completed) {
+        studentPerformance[studentId].sabqiCompleted = true;
+      }
+
+      if (progress.manzil && progress.manzil.quality) {
+        studentPerformance[studentId].manzilRating += progress.manzil.quality;
+        studentPerformance[studentId].entriesCount++;
+      }
+    });
+
+    // Find the top performer
+    let topPerformer = null;
+    let highestScore = -1;
+
+    Object.values(studentPerformance).forEach(student => {
+      // Calculate average manzil rating
+      const avgManzilRating = student.entriesCount > 0 
+        ? student.manzilRating / student.entriesCount 
+        : 0;
+
+      // Simple scoring: totalLines + (avgManzilRating * 5) + (sabqiCompleted ? 10 : 0)
+      const score = student.totalLines + (avgManzilRating * 5) + (student.sabqiCompleted ? 10 : 0);
+      
+      if (score > highestScore) {
+        highestScore = score;
+        topPerformer = {
+          name: student.name,
+          sabaqLines: student.totalLines,
+          sabqiCompleted: student.sabqiCompleted,
+          manzilRating: avgManzilRating.toFixed(1)
+        };
+      }
+    });
+
+    res.status(200).json({
+      name: `${teacher.firstname} ${teacher.lastname}`,
+      totalStudents,
+      pendingSabaq,
+      topPerformer: topPerformer || {
+        name: "No data available",
+        sabaqLines: 0,
+        sabqiCompleted: false,
+        manzilRating: 0
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching teacher dashboard stats:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 
 
-module.exports = { getStudentsForTeacher, assignStudentToTeacher, markAttendance, getMonthlyAttendance , markSabaq, markSabqi, markManzil, getMonthlyProgress , getStudentsProgressForDate};
+const getTodayStudentProgress = async (req, res) => {
+  try {
+    const teacherId = req.user.id;
+    const today = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
+
+    // Get all students assigned to this teacher
+    const teacher = await User.findById(teacherId).populate('teacherInfo.students');
+    if (!teacher) {
+      return res.status(404).json({ message: 'Teacher not found' });
+    }
+
+    const studentIds = teacher.teacherInfo.students.map(student => student._id);
+    
+    // Get today's progress for all students in one query
+    const progressRecords = await Progress.find({
+      teacherId,
+      studentId: { $in: studentIds },
+      date: today
+    }).populate('studentId', 'firstname lastname');
+
+    // Create a map for quick lookups
+    const progressMap = new Map(
+      progressRecords.map(record => [record.studentId._id.toString(), record])
+    );
+
+    // Prepare the response data
+    const studentsProgress = teacher.teacherInfo.students.map(student => {
+      const progress = progressMap.get(student._id.toString());
+      
+      return {
+        name: `${student.firstname} ${student.lastname}`,
+        sabaq: progress?.sabaq ? {
+          current: progress.sabaq.numberOfLines || 0,
+          target: progress.sabaq.startingSurah && progress.sabaq.endingSurah ? 
+            `Verse ${progress.sabaq.startingAyah}-${progress.sabaq.endingAyah}, Page ${progress.sabaq.startingSurah.number}` :
+            "Not set"
+        } : { current: 0, target: "Not recorded" },
+        sabqi: progress?.sabqi?.quality || 0,
+        manzil: progress?.manzil ? {
+          juzz: progress.manzil.juzz?.number || 0,
+          rating: progress.manzil.quality || 0
+        } : { juzz: 0, rating: 0 }
+      };
+    });
+
+    res.status(200).json(studentsProgress);
+  } catch (error) {
+    console.error('Error fetching today\'s student progress:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { 
+  getStudentsForTeacher, 
+  assignStudentToTeacher, 
+  markAttendance, 
+  getMonthlyAttendance, 
+  markSabaq, 
+  markSabqi, 
+  markManzil, 
+  getMonthlyProgress, 
+  getStudentsProgressForDate, 
+  getTeacherDashboardStats, 
+  getTodayStudentProgress
+};

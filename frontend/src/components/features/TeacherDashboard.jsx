@@ -181,42 +181,56 @@ const TeacherDashboard = () => {
                           <TableCell className="font-medium">{student.name}</TableCell>
                           <TableCell>
                             <div>
-                              <span className="font-medium">{student.sabaq.current} lines</span>
-                              <p className="text-sm text-gray-500">{student.sabaq.target}</p>
+                              <span className="font-medium">
+                                {student.sabaq.current > 0 ? `${student.sabaq.current} lines` : "Not recorded"}
+                              </span>
+                              <p className="text-sm text-gray-500">
+                                {student.sabaq.target && student.sabaq.target !== "Not recorded" && student.sabaq.target !== "Not set" 
+                                  ? student.sabaq.target.replace("Page", "Surah") 
+                                  : "Not recorded"}
+                              </p>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center">
-                              {Array.from({ length: 5 }).map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${
-                                    i < Math.floor(student.sabqi)
-                                      ? "text-teal-500"
-                                      : "text-gray-300"
-                                  }`}
-                                  fill={i < Math.floor(student.sabqi) ? "currentColor" : "none"}
-                                />
-                              ))}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div>
-                              <p>Juzz {student.manzil.juzz}</p>
-                              <div className="flex items-center mt-1">
-                                {Array.from({ length: 5 }).map((_, i) => (
+                              {student.sabqi > 0 ? (
+                                Array.from({ length: 5 }).map((_, i) => (
                                   <Star
                                     key={i}
-                                    className={`h-3 w-3 ${
-                                      i < Math.floor(student.manzil.rating)
+                                    className={`h-4 w-4 ${
+                                      i < Math.floor(student.sabqi)
                                         ? "text-teal-500"
                                         : "text-gray-300"
                                     }`}
-                                    fill={i < Math.floor(student.manzil.rating) ? "currentColor" : "none"}
+                                    fill={i < Math.floor(student.sabqi) ? "currentColor" : "none"}
                                   />
-                                ))}
-                              </div>
+                                ))
+                              ) : (
+                                <span className="text-sm text-gray-500">Not recorded</span>
+                              )}
                             </div>
+                          </TableCell>
+                          <TableCell>
+                            {student.manzil && student.manzil.juzz > 0 ? (
+                              <div>
+                                <p>Juzz {student.manzil.juzz}</p>
+                                <div className="flex items-center mt-1">
+                                  {Array.from({ length: 5 }).map((_, i) => (
+                                    <Star
+                                      key={i}
+                                      className={`h-3 w-3 ${
+                                        i < Math.floor(student.manzil.rating)
+                                          ? "text-teal-500"
+                                          : "text-gray-300"
+                                      }`}
+                                      fill={i < Math.floor(student.manzil.rating) ? "currentColor" : "none"}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            ) : (
+                              <span className="text-sm text-gray-500">Not recorded</span>
+                            )}
                           </TableCell>
                           <TableCell>
                             <Button

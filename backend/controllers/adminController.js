@@ -143,9 +143,57 @@ const createStudent = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+const getAdminDashboardStats = async (req, res) => {
+  try {
+    // Get total students count
+    const totalStudents = await User.countDocuments({ role: 'student' });
+    
+    // Get total teachers count
+    const totalTeachers = await User.countDocuments({ role: 'teacher' });
 
+    res.status(200).json({
+      success: true,
+      data: {
+        totalStudents,
+        totalTeachers
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching admin dashboard stats:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
+const getTeachersOverview = async (req, res) => {
+  try {
+    // Get all teachers with their student information
+    const teachers = await User.find({ role: 'teacher' })
+      .populate('teacherInfo.students', 'firstname lastname')
+      .lean();
+
+    const teachersOverview = teachers.map(teacher => ({
+      id: teacher._id,
+      name: `${teacher.firstname} ${teacher.lastname}`,
+      section: teacher.teacherInfo?.section || `T${teacher._id.toString().slice(-4)}`, // Generate section based on teacher ID if not available
+      studentCount: teacher.teacherInfo?.students?.length || 0
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: teachersOverview
+    });
+  } catch (error) {
+    console.error('Error fetching teachers overview:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 module.exports = {
-    getUnassignedStudents, getTeachers, assignStudent, addHoliday, createStudent
+    getUnassignedStudents, 
+    getTeachers, 
+    assignStudent, 
+    addHoliday, 
+    createStudent,
+    getAdminDashboardStats,
+    getTeachersOverview
 };

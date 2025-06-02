@@ -100,4 +100,52 @@ const createTeacher = async (username, password, firstname, lastname) => {
   }
 };
 
-    export { fetchUnassignedStudents, fetchTeachers, assignStudent, createStudent, createTeacher };
+const getAdminDashboardStats = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/dashboard-stats`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    } else {
+      console.error('Failed to fetch dashboard stats');
+      return null;
+    }
+  } catch (error) {
+    console.error('Failed to fetch dashboard stats', error);
+    return null;
+  }
+};
+
+const getTeachersOverview = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/teachers-overview`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    } else {
+      console.error('Failed to fetch teachers overview');
+      return [];
+    }
+  } catch (error) {
+    console.error('Failed to fetch teachers overview', error);
+    return [];
+  }
+};
+
+export { 
+    fetchUnassignedStudents, 
+    fetchTeachers, 
+    assignStudent, 
+    createStudent, 
+    createTeacher,
+    getAdminDashboardStats,
+    getTeachersOverview
+};
