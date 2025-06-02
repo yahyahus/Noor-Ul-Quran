@@ -17,9 +17,9 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent } from '@/components/ui/card';
 
 
-import { Button} from "@/components/ui/Button";
-import { Separator } from "@/components/ui/Separator";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet";
+import { Button} from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navItems = {
   student: [
